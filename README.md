@@ -33,11 +33,20 @@
 
 ## 1 请求报文、响应报文的实现
 
+**见Message包里的Request类和Response类**
+
+## 2 服务器
+
+## 3 客户端
+
+-------------------
+
+
 **参考资料:**
 **https://www.cnblogs.com/chris-cp/p/5082514.html**
 **https://blog.csdn.net/YaoLang1995/article/details/89316912**
 **https://blog.csdn.net/linhao_obj/article/details/120767149?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=3**
-
+**https://blog.csdn.net/weixin_42316952/article/details/114081588**
 
 
 
