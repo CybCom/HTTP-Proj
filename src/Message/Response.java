@@ -1,6 +1,7 @@
 package Message;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public class Response {
     //解析inputSteam流，返回一个Response对象,用于client接受来自server的响应
     public static Response parseResponse(InputStream rspStream) throws IOException {
         Response response = new Response();
-        BufferedReader bf = new BufferedReader(new InputStreamReader(rspStream, "UTF-8"));
+        BufferedReader bf = new BufferedReader(new InputStreamReader(rspStream, StandardCharsets.UTF_8));
         decodeResponseLine(bf, response);
         decodeResponseHeader(bf, response);
         decodeResponseMessage(bf, response);
@@ -26,7 +27,7 @@ public class Response {
     }
 
     //用于在server端创建将要发送的response
-    public static Response buildResponse() {
+    public static Response buildResponse(String s1, String s2) {
         return null;
     }
 
@@ -81,4 +82,20 @@ public class Response {
     public void setMessage(String s) {message = s;}
 
     public String getMessage() {return message;}
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        String responseLine = version + " " + String.valueOf(code) + " " + status + "\r\n";
+        sb.append(responseLine);
+
+        for (Map.Entry<String, String> entry : header.entrySet()) {
+            String tmp = entry.getKey() + ":" + entry.getValue() + "\r\n";
+            sb.append(tmp);
+        }
+        sb.append("\r\n");
+        sb.append(message);
+        sb.append("\r\n");
+
+        return sb.toString();
+    }
 }

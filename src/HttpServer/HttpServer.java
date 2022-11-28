@@ -21,8 +21,10 @@ public class HttpServer {
             e.printStackTrace();
         }
     }
-    private static void service(Socket socket) throws Exception {
-
+    private static void service(Socket socket) {
+        HttpTask httpTask = new HttpTask(socket);
+        Thread thread = new Thread(httpTask);
+        thread.start();
     }
 
 

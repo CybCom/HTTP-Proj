@@ -77,4 +77,22 @@ public class Request {
     public void setMessage(String s) {message = s;}
 
     public String getMessage() {return message;}
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        String requestLine = method + " " + url + " " + version + "\r\n";
+        sb.append(requestLine);
+
+        for (Map.Entry<String, String> entry : header.entrySet()) {
+            String tmp = entry.getKey() + ":" + entry.getValue() + "\r\n";
+            sb.append(tmp);
+        }
+        sb.append("\r\n");
+        if (message != null) {
+            sb.append(message);
+        }
+        sb.append("\r\n");
+
+        return sb.toString();
+    }
 }
