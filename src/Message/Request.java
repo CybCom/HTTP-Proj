@@ -1,5 +1,7 @@
 package Message;
 
+import util.DefaultRequestHead;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +24,13 @@ public class Request {
     }
 
     //用于在client端创建request
-    public static Request buildRequest() {
-        return null;
+    public static Request buildRequest(String url) {
+        Request request = new Request();
+        request.setMethod("GET");
+        request.setUrl(url);
+        request.setVersion("HTTP/1.1");
+        request.setHeader(DefaultRequestHead.DEFAULT_HEADER);
+        return request;
     }
 
     private static void decodeRequestLine(BufferedReader bf, Request request) throws IOException {
@@ -47,7 +54,7 @@ public class Request {
     }
 
     private static void decodeRequestMessage(BufferedReader bf, Request request) throws IOException {
-        int messageLen = Integer.parseInt(request.getHeader().getOrDefault("Content-Length", "0")); //请求体有多少字节，可能为0
+        int messageLen = Integer.parseInt(request.getHeader().getOrDefault("Content-Length", "0").trim()); //请求体有多少字节，可能为0
         if (messageLen != 0) {
             char[] chars = new char[messageLen];
             int readByte = bf.read(chars);

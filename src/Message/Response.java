@@ -27,7 +27,7 @@ public class Response {
     }
 
     //用于在server端创建将要发送的response
-    public static Response buildResponse(String s1, String s2) {
+    public static Response buildResponse(Request request) {
         return null;
     }
 
@@ -52,7 +52,7 @@ public class Response {
     }
 
     private static void decodeResponseMessage(BufferedReader bf, Response response) throws IOException {
-        int messageLen = Integer.parseInt(response.getHeader().getOrDefault("Content-Length", "0")); //响应体有多少字节
+        int messageLen = Integer.parseInt(response.getHeader().getOrDefault("Content-Length", "0").trim()); //响应体有多少字节
         if (messageLen != 0) {
             char[] chars = new char[messageLen];
             int readByte = bf.read(chars);

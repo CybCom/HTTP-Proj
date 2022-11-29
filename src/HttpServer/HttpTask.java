@@ -23,11 +23,12 @@ public class HttpTask implements Runnable{
     public void run() {
 //        System.out.println(Thread.currentThread().getName() + " is running for " + socket.getInetAddress() + ":" + socket.getPort());
         try {
-            InputStream reqStream = socket.getInputStream();
-            Request request = Request.parseRequest(reqStream);
+            InputStream inFromClient = socket.getInputStream();
+            Request request = Request.parseRequest(inFromClient);
             System.out.println(request.toString());
             Response response = createByMethod(request); //get或post
             assert response != null;
+            System.out.print(response.toString());
             OutputStream outToClient = socket.getOutputStream();
             outToClient.write(response.toString().getBytes(StandardCharsets.UTF_8));
             socket.close();
@@ -65,6 +66,7 @@ public class HttpTask implements Runnable{
                 rs.setMessage(message);
                 Map<String, String> map = new HashMap<>();
                 map.put("Content-Type", " text/html");
+                map.put("Content-Length", " " + String.valueOf(message.getBytes(StandardCharsets.UTF_8).length));
                 rs.setHeader(map);
                 return rs;
             } catch (IOException ex) {
