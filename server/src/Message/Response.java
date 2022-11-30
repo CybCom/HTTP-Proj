@@ -1,6 +1,9 @@
 package Message;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,30 +65,49 @@ public class Response {
         }
     }
 
+    public int getCode() {
+        return code;
+    }
 
-    public void setCode(String s) {code = Integer.parseInt(s);}
+    public void setCode(String s) {
+        code = Integer.parseInt(s);
+    }
 
-    public int getCode() {return code;}
+    public String getStatus() {
+        return status;
+    }
 
-    public void setStatus(String s) {status = s;}
+    public void setStatus(String s) {
+        status = s;
+    }
 
-    public String getStatus() {return status;}
+    public String getVersion() {
+        return version;
+    }
 
-    public void setVersion(String s) {version = s;}
+    public void setVersion(String s) {
+        version = s;
+    }
 
-    public String getVersion() {return version;}
+    public Map<String, String> getHeader() {
+        return header;
+    }
 
-    public void setHeader(Map<String, String> map) {header = map;}
+    public void setHeader(Map<String, String> map) {
+        header = map;
+    }
 
-    public Map<String, String> getHeader() {return header;}
+    public String getMessage() {
+        return message;
+    }
 
-    public void setMessage(String s) {message = s;}
-
-    public String getMessage() {return message;}
+    public void setMessage(String s) {
+        message = s;
+    }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        String responseLine = version + " " + String.valueOf(code) + " " + status + "\r\n";
+        String responseLine = version + " " + code + " " + status + "\r\n";
         sb.append(responseLine);
 
         for (Map.Entry<String, String> entry : header.entrySet()) {

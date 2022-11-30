@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static java.lang.System.exit;
 
-public class HttpTask implements Runnable{
+public class HttpTask implements Runnable {
     private static final String rootPath = "webRoot";
     Socket socket;
 
@@ -25,10 +25,10 @@ public class HttpTask implements Runnable{
         try {
             InputStream inFromClient = socket.getInputStream();
             Request request = Request.parseRequest(inFromClient);
-            System.out.println(request.toString());
+            System.out.println(request);
             Response response = createByMethod(request); //get或post
             assert response != null;
-            System.out.print(response.toString());
+            System.out.print(response);
             OutputStream outToClient = socket.getOutputStream();
             outToClient.write(response.toString().getBytes(StandardCharsets.UTF_8));
             socket.close();
@@ -47,7 +47,7 @@ public class HttpTask implements Runnable{
         if (request.getMethod().equals("GET")) {
             String url = request.getUrl();
             try {
-                InputStream resource = HttpServer.class.getResourceAsStream(rootPath+url);
+                InputStream resource = HttpServer.class.getResourceAsStream(rootPath + url);
                 assert resource != null;
                 BufferedReader bf = new BufferedReader(new InputStreamReader(resource));
                 StringBuilder sb = new StringBuilder();
@@ -66,7 +66,7 @@ public class HttpTask implements Runnable{
                 rs.setMessage(message);
                 Map<String, String> map = new HashMap<>();
                 map.put("Content-Type", " text/html");
-                map.put("Content-Length", " " + String.valueOf(message.getBytes(StandardCharsets.UTF_8).length));
+                map.put("Content-Length", " " + message.getBytes(StandardCharsets.UTF_8).length);
                 rs.setHeader(map);
                 return rs;
             } catch (IOException ex) {
