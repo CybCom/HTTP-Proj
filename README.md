@@ -2,6 +2,10 @@
 
 ---
 
+# 冲突提醒：任何修改前务必pull，修改后务必commit&push！
+
+---
+
 # 任务要求
 
 > Good luck and have fun!
