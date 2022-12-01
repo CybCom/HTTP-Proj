@@ -10,8 +10,8 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 public class HttpClient {
-    private String hostname;
-    private int port;
+    private final String hostname;
+    private final int port;
 
     HttpClient (String hostname, int port) {
         this.hostname = hostname;

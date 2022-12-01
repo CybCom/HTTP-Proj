@@ -1,9 +1,10 @@
 package HttpServer;
 
-import java.io.*;
 import java.net.*;
 
 public class HttpServer {
+
+    public static final String ROOT_PATH = "webRoot"; //资源存放路径
     public static final int DEFAULT_PORT = 8080; //默认8080端口
 
     public static void start(){
