@@ -1,4 +1,4 @@
-package util;
+package utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,5 +21,4 @@ public class DefaultRequestHead {
             put("Accept-Language", " zh-CN,zh;q=0.9");
         }
     };
-
 }

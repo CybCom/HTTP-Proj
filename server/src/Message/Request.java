@@ -1,8 +1,12 @@
 package Message;
 
-import util.DefaultRequestHead;
+import utils.DefaultRequestHead;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +20,7 @@ public class Request {
     //解析inputSteam流，返回一个request对象，用于server接受来自client的请求
     public static Request parseRequest(InputStream reqStream) throws IOException {
         Request request = new Request();
-        BufferedReader bf = new BufferedReader(new InputStreamReader(reqStream, "UTF-8"));
+        BufferedReader bf = new BufferedReader(new InputStreamReader(reqStream, StandardCharsets.UTF_8));
         decodeRequestLine(bf, request);
         decodeRequestHeader(bf, request);
         decodeRequestMessage(bf, request);
@@ -64,26 +68,45 @@ public class Request {
         }
     }
 
+    public String getMethod() {
+        return method;
+    }
 
-    public void setMethod(String s) {method = s;}
+    public void setMethod(String s) {
+        method = s;
+    }
 
-    public String getMethod() {return method;}
+    public String getUrl() {
+        return url;
+    }
 
-    public void setUrl(String s) {url = s;}
+    public void setUrl(String s) {
+        url = s;
+    }
 
-    public String getUrl() {return url;}
+    public String getVersion() {
+        return version;
+    }
 
-    public void setVersion(String s) {version = s;}
+    public void setVersion(String s) {
+        version = s;
+    }
 
-    public String getVersion() {return version;}
+    public Map<String, String> getHeader() {
+        return header;
+    }
 
-    public void setHeader(Map<String, String> map) {header = map;}
+    public void setHeader(Map<String, String> map) {
+        header = map;
+    }
 
-    public Map<String, String> getHeader() {return header;}
+    public String getMessage() {
+        return message;
+    }
 
-    public void setMessage(String s) {message = s;}
-
-    public String getMessage() {return message;}
+    public void setMessage(String s) {
+        message = s;
+    }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
