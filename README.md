@@ -9,7 +9,7 @@
 
 ### 1. 不允许基于netty等框架，完全基于Java Socket API进行编写
 
-### 2. 不分区使用的IO模型，BIO、NIO和AIO都可以 （我们使用BIO）
+### 2. 不分区使用的IO模型，BIO、NIO和AIO都可以 
 
 ### 3. 实现基础的HTTP请求、响应功能，具体要求如下：
 
@@ -47,6 +47,18 @@
 
 ## 4 状态码
 
+![image](status%20code.png)
+
+## 5 资源管理
+
+**sever的资源在HttpSever/webRoot目录下，各资源状态用json文件保存**
+**client的缓存在HttpClient/cache下,也用json文件保存状态**
+
+## 6 长连接
+
+## 7 MIME类型
+
+## 8 登陆的实现
 
 
 -------------------
@@ -58,6 +70,7 @@
 **https://blog.csdn.net/linhao_obj/article/details/120767149?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=3**
 **https://blog.csdn.net/weixin_42316952/article/details/114081588**
 **https://developer.mozilla.org/zh-CN/docs/Web/HTTP**
+**https://zhuanlan.zhihu.com/p/388270712**
 
 
 
