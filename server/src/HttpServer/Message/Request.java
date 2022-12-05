@@ -1,4 +1,4 @@
-package Message;
+package HttpServer.Message;
 
 import utils.DefaultRequestHead;
 

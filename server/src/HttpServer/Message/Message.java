@@ -1,4 +1,4 @@
-package Message;
+package HttpServer.Message;
 
 public abstract class Message {
 

@@ -1,7 +1,7 @@
 package HttpServer;
 
-import Message.Request;
-import Message.Response;
+import HttpServer.Message.Request;
+import HttpServer.Message.Response;
 
 import java.io.*;
 import java.net.Socket;

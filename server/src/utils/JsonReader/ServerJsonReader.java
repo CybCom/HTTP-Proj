@@ -1,6 +1,6 @@
 package utils.JsonReader;
-import Message.Request;
-import Message.Response;
+import HttpServer.Message.Request;
+import HttpServer.Message.Response;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSON;
 import utils.JsonReader.JavaBean.ServerResourceBean;
@@ -8,7 +8,7 @@ import utils.JsonReader.JavaBean.ServerResourceBean;
 import java.io.File;
 
 public class ServerJsonReader {
-    private final static String file_path = "C:/Users/lenovo-002/HTTP-Proj/server/src/HttpServer/webRoot/resourceManagement.json";
+    private final static String file_path = "C:/Users/lenovo-002/HTTP-Proj/server/src/HttpServer/cache/resourceManagement.json";
 
     private final ServerResourceBean resourceBean;
 
