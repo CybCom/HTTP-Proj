@@ -1,13 +1,11 @@
 package Message;
 
-import HttpServer.HttpServer;
+import utils.JsonReader.ServerJsonReader;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.lang.System.exit;
 
 public class Response {
     private String version;
@@ -32,48 +30,41 @@ public class Response {
 
     //用于在server端创建将要发送的response
     public static Response buildResponse(Request request) {
-        if (request.getMethod().equals("GET")) {
-            return createByGet(request);
-        } else if (request.getMethod().equals("POST")) {
-            return createByPost(request);
-        } else {
-            System.out.println("Unknown request method!");
-            exit(1);
-        }
-        return null;
+        ServerJsonReader serverJsonReader = ServerJsonReader.getInstance();
+        return serverJsonReader.createResponse(request);
     }
 
-    private static Response createByGet(Request request) {
-        String url = request.getUrl();
-        Response response = new Response();
-        try {
-            InputStream resource = HttpServer.class.getResourceAsStream(HttpServer.ROOT_PATH + url);
-            assert resource != null;
-            BufferedReader bf = new BufferedReader(new InputStreamReader(resource));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = bf.readLine()) != null) {
-                sb.append(line);
-                sb.append("\r\n");
-            }
-            String message = sb.toString();
-            response.setVersion("HTTP/1.1");
-            response.setCode("200");
-            response.setStatus("OK");
-            Map<String, String> map = new HashMap<>();
-            map.put("Content-Type", " text/html");
-            map.put("Content-Length", " " + String.valueOf(message.getBytes(StandardCharsets.UTF_8).length));
-            response.setHeader(map);
-            response.setMessage(message);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return response;
-    }
+//    private static Response createByGet(Request request) {
+//        String url = request.getUrl();
+//        Response response = new Response();
+//        try {
+//            InputStream resource = HttpServer.class.getResourceAsStream(HttpServer.ROOT_PATH + url);
+//            assert resource != null;
+//            BufferedReader bf = new BufferedReader(new InputStreamReader(resource));
+//            StringBuilder sb = new StringBuilder();
+//            String line;
+//            while ((line = bf.readLine()) != null) {
+//                sb.append(line);
+//                sb.append("\r\n");
+//            }
+//            String message = sb.toString();
+//            response.setVersion("HTTP/1.1");
+//            response.setCode("200");
+//            response.setStatus("OK");
+//            Map<String, String> map = new HashMap<>();
+//            map.put("Content-Type", " text/html");
+//            map.put("Content-Length", " " + String.valueOf(message.getBytes(StandardCharsets.UTF_8).length));
+//            response.setHeader(map);
+//            response.setMessage(message);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//        return response;
+//    }
 
-    private static Response createByPost(Request request) {
-        return null;
-    }
+//    private static Response createByPost(Request request) {
+//        return null;
+//    }
 
     private static void decodeResponseLine(BufferedReader bf, Response response) throws IOException {
         String firstLine = bf.readLine();
