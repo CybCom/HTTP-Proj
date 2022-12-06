@@ -1,9 +1,16 @@
-# 基于Java Socket API搭建简单的HTTP客户端和服务器端程序
+# 提醒
+
+## 务必更改前pull，更改后push！
+## 除非知道自己更改的是什么，否则merge时一律accept theirs，以远端为准！
+## 请在commit message中简单写明更改的目的！
+
+---
+
+# 任务要求
+
+## 基于Java Socket API搭建简单的HTTP客户端和服务器端程序
 
 > Good luck and have fun!
-
-
-
 
 ##  说明：
 
@@ -27,7 +34,7 @@
 
 ### 4．基于以上的要求，实现注册，登录功能(数据无需持久化，存在内存中即可，只需要实现注册和登录的接口，可以使用postman等方法模拟请求发送，无需客户端)。
 
-
+---
 
 # 具体实现
 
@@ -47,7 +54,7 @@
 
 ## 4 状态码
 
-![image](status%20code.png)
+![image](status_code.png)
 
 ## 5 资源管理
 
@@ -60,11 +67,10 @@
 
 ## 8 登陆的实现
 
+---
 
--------------------
+# 参考资料
 
-
-**参考资料:**
 **https://www.cnblogs.com/chris-cp/p/5082514.html**
 **https://blog.csdn.net/YaoLang1995/article/details/89316912**
 **https://blog.csdn.net/linhao_obj/article/details/120767149?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=3**

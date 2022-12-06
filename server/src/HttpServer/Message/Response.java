@@ -18,6 +18,10 @@ public class Response {
 
     private String message;
 
+    /**
+     * @param rspStream inputSteam流
+     * @return 一个Response对象,用于client接受来自server的响应
+     */
     //解析inputSteam流，返回一个Response对象,用于client接受来自server的响应
     public static Response parseResponse(InputStream rspStream) throws IOException {
         Response response = new Response();
@@ -28,6 +32,10 @@ public class Response {
         return response;
     }
 
+    /**
+     * @param request Request类（客户端发出的消息）
+     * @return 在server端将要发送的response
+     */
     //用于在server端创建将要发送的response
     public static Response buildResponse(Request request) {
         ServerJsonReader serverJsonReader = ServerJsonReader.getInstance();

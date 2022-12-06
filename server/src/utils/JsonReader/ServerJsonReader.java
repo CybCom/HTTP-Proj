@@ -1,14 +1,16 @@
 package utils.JsonReader;
-import HttpServer.Message.Request;
-import HttpServer.Message.Response;
+import Message.Request;
+import Message.Response;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSON;
+import utils.JsonReader.JavaBean.ServerDataBean;
 import utils.JsonReader.JavaBean.ServerResourceBean;
 
 import java.io.File;
+import java.util.Objects;
 
 public class ServerJsonReader {
-    private final static String file_path = "C:/Users/lenovo-002/HTTP-Proj/server/src/HttpServer/cache/resourceManagement.json";
+    private final static String file_path = "D:/HTTP/HTTP-Proj/server/src/HttpServer/webRoot/resourceManagement.json";
 
     private final ServerResourceBean resourceBean;
 
@@ -34,9 +36,30 @@ public class ServerJsonReader {
         return response;
     }
 
+    /**
+     * @param request request报文
+     * @return 状态码
+     */
     private String judgeCode(Request request) {
         //TODO
-        return null;
+        for(ServerDataBean list : resourceBean.getResourceList()){
+            if(Objects.equals(request.getUrl(), list.getUrl())){
+                if(Objects.equals(request.getMethod(), list.getAllow())){
+                    boolean contains = request.getHeader().containsKey("If-None-Match") ||
+                            request.getHeader().containsKey("If-Modified-Since");
+                    if(contains){//304
+                        //TODO client 缓存 304
+                    }
+                    boolean isMove = list.getReLocationJudge().getIsMove();
+                    if(isMove) return "200";
+                    boolean isPermanent = list.getReLocationJudge().getIsPermanent();
+                    if(isPermanent) return "301";
+                    return "302";
+                }
+                return "405";
+            }
+        }
+        return "404";
     }
 
     private void setOthersByCode(Response response) {
