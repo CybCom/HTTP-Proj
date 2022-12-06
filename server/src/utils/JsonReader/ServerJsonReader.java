@@ -1,6 +1,6 @@
 package utils.JsonReader;
-import Message.Request;
-import Message.Response;
+import HttpServer.Message.Request;
+import HttpServer.Message.Response;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSON;
 import utils.JsonReader.JavaBean.ServerDataBean;
