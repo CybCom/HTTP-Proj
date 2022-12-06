@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ServerJsonReader {
-    private final static String file_path = "D:/HTTP/HTTP-Proj/server/src/HttpServer/webRoot/resourceManagement.json";
+    private final static String file_path = "D:/HTTP/HTTP-Proj/server/src/HttpServer/cache/resourceManagement.json";
 
     private final ServerResourceBean resourceBean;
 
@@ -47,14 +47,14 @@ public class ServerJsonReader {
         //TODO
         try{
             for(ServerDataBean list : resourceBean.getResourceList()){
-                if(Objects.equals(request.getUrl(), list.getUrl())){
-                    if(Objects.equals(request.getMethod(), list.getAllow())){
+                if(request.getUrl().equals(list.getUrl())){
+                    if(request.getMethod().equals(list.getAllow())){
                         boolean contains = request.getHeader().containsKey("If-None-Match") ||
                                 request.getHeader().containsKey("If-Modified-Since");
                         if(contains){//304
                             if(request.getHeader().containsKey("If-None-Match")){//TODO maybe change
                                 for(ServerDataBean findEtag : resourceBean.getResourceList()){
-                                    if(Objects.equals(request.getHeader().get("If-None-Match"),
+                                    if(request.getHeader().get("If-None-Match").equals(
                                             findEtag.getModifiedJudge().getEtag())){//TODO 弱比较方法
                                         return "304";
                                     }
@@ -110,11 +110,11 @@ public class ServerJsonReader {
             case 301 -> {
                 response.setStatus("Moved Permanently");
                 for (ServerDataBean list : resourceBean.getResourceList()) {
-                    if (Objects.equals(list.getUrl(), request.getUrl())) {
+                    if (list.getUrl().equals(request.getUrl())) {
                         response.getHeader().put("Location", list.getReLocationJudge().getNew_url());
                     }
                 }
-                response.setMessage(ReturnMessage(request.getUrl()));
+                response.setMessage(ReturnMessage(response.getHeader().get("Location")));
             }
             case 302 -> {
                 response.setStatus("Found");
@@ -150,6 +150,4 @@ public class ServerJsonReader {
         ServerJsonReader serverJsonReader = ServerJsonReader.getInstance();
         System.out.println(JSON.toJSONString(serverJsonReader.resourceBean));
     }
-
-
 }
