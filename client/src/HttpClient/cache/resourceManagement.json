@@ -1,5 +1,1 @@
-{"ResourceList" :
-[{"Url": "test1.html", "ModifiedJudge": {"Last_modified": "2022.12.15", "Etag": " "}, "Path": "454646"},
-  {"Url": "test2.html", "ModifiedJudge": {"Last_modified": "2022.12.15", "Etag": " "}, "Path": "555555"}
-]
-}
+{"resourceList":[{"modifiedBean":{"etag":"1","last_modified":"1670341551"},"path":"C:/Users/lenovo-002/HTTP-Proj/client/src/HttpClient/cache/test.html","url":"/test.html"}]}

@@ -15,9 +15,14 @@ public class Request {
     private String url;
     private String version;
     private Map<String, String> header;
-    private String message;
+    private String message; //由于我们只用request.post()发送账号、密码等文本信息，固请求体部分简化为String进行存取
 
-    //解析inputSteam流，返回一个request对象，用于server接受来自client的请求
+    /***
+     * 解析inputSteam流，返回一个request对象，用于server接受来自client的请求
+     * @param reqStream 请求报文的字节流
+     * @return 解析好的request报文对象
+     * @throws IOException
+     */
     public static Request parseRequest(InputStream reqStream) throws IOException {
         Request request = new Request();
         BufferedReader bf = new BufferedReader(new InputStreamReader(reqStream, StandardCharsets.UTF_8));
@@ -27,7 +32,11 @@ public class Request {
         return request;
     }
 
-    //用于在client端创建request
+    /***
+     * 用于在client端创建request
+     * @param url URL
+     * @return 建立好的request报文
+     */
     public static Request buildRequest(String url) {
         Request request = new Request();
         request.setMethod("GET");
@@ -39,7 +48,7 @@ public class Request {
 
     private static void decodeRequestLine(BufferedReader bf, Request request) throws IOException {
         String firstLine = bf.readLine();
-        String[] lines = firstLine.split(" ");
+        String[] lines = firstLine.split(" ", 3);
         assert lines.length == 3;
         request.setMethod(lines[0]);
         request.setUrl(lines[1]);
@@ -63,7 +72,7 @@ public class Request {
             char[] chars = new char[messageLen];
             int readByte = bf.read(chars);
             assert readByte == messageLen;
-            String message = new String(chars);
+            String message = new String(chars).substring(0, readByte);
             request.setMessage(message);
         }
     }

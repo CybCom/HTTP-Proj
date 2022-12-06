@@ -9,11 +9,12 @@ import utils.JsonReader.JavaBean.ServerResourceBean;
 import utils.MonthToNum;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ServerJsonReader {
-    private final static String file_path = "D:/HTTP/HTTP-Proj/server/src/HttpServer/cache/resourceManagement.json";
+    private final static String file_path = "C:/Users/lenovo-002/HTTP-Proj/server/src/HttpServer/cache/resourceManagement.json";
 
     private final ServerResourceBean resourceBean;
 
@@ -127,6 +128,12 @@ public class ServerJsonReader {
             default -> {
             }
         }
+        Map<String, String>map = response.getHeader();
+        if (map == null) {
+            map = new HashMap<>();
+        }
+        map.put("Content-Length", String.valueOf(response.getMessage().getBytes(StandardCharsets.UTF_8).length));
+        response.setHeader(map);
     }
 
     private String ReturnMessage(String url){//TODO

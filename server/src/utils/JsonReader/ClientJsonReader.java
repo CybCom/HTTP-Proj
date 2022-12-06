@@ -16,7 +16,7 @@ import java.util.Map;
 public class ClientJsonReader {
     private final static String file_path = "C:/Users/lenovo-002/HTTP-Proj/client/src/HttpClient/cache/resourceManagement.json";
 
-    private final static String stored_path = "C:/Users/lenovo-002/HTTP-Proj/client/src/HttpClient/cache/";
+    private final static String stored_path = "C:/Users/lenovo-002/HTTP-Proj/client/src/HttpClient/cache";
     private final ClientResourceBean resourceBean;
 
     public ClientJsonReader() {
@@ -24,6 +24,10 @@ public class ClientJsonReader {
         resourceBean = JSON.parseObject(jsonStr, ClientResourceBean.class);
     }
 
+    /***
+     * 在client的缓存json文件中遍历，看有没有对应的url，若要则改为条件请求
+     * @param request 原请求
+     */
     public void searchUrl(Request request) {
         String url = request.getUrl();
         List<ClientDataBean> resourceBeanList = resourceBean.getResourceList();
@@ -37,12 +41,26 @@ public class ClientJsonReader {
         }
     }
 
+    /***
+     * 根据响应报文来对client缓存做处理
+     * @param response 响应报文
+     * @param url client请求的url
+     * @throws IOException
+     */
     public void updateResource(Response response, String url) throws IOException {
         int res = update(response, url);
         if (res == 1) {
             FileUtil.writeUtf8String(JSON.toJSONString(resourceBean), new File(file_path)); //若json文件有更新，则写回
         }
     }
+
+    /***
+     * updateResource()方法的内部实现
+     * @param response 响应报文
+     * @param url client请求的url
+     * @return 1 表示json文件对应的ClientResourceBean类有更新，需写回json文件 ，0 表示不需要
+     * @throws IOException
+     */
 
     private int update(Response response, String url) throws IOException {
         int code = response.getCode();
@@ -52,7 +70,7 @@ public class ClientJsonReader {
                 List<ClientDataBean> resourceList = resourceBean.getResourceList();
                 for (ClientDataBean clientDataBean : resourceList) {
                     if (url.equals(clientDataBean.getUrl())) {
-                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000));
+                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000)); //TODO
                         FileUtil.writeUtf8String(response.getMessage(), new File(clientDataBean.getPath()));
                         return 1;
                     }
@@ -68,7 +86,7 @@ public class ClientJsonReader {
                 for (ClientDataBean clientDataBean : resourceList) {
                     if (url.equals(clientDataBean.getUrl())) {
                         clientDataBean.setUrl(new_url);
-                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000));
+                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000)); //TODO
                         FileUtil.writeUtf8String(response.getMessage(), new File(clientDataBean.getPath()));
                         return 1;
                     }
@@ -83,7 +101,7 @@ public class ClientJsonReader {
                 List<ClientDataBean> resourceList = resourceBean.getResourceList();
                 for (ClientDataBean clientDataBean : resourceList) {
                     if (url.equals(clientDataBean.getUrl())) {
-                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000));
+                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000)); //TODO
                         resource_path = clientDataBean.getPath();
                     }
                 }
@@ -106,10 +124,14 @@ public class ClientJsonReader {
         }
     }
 
+    /***
+     * 向ClientResourceBean的ResourceList中加入一条DataBean
+     * @param url client请求的url
+     */
     private void addOneDataBean(String url) {
         ClientDataBean clientDataBean = new ClientDataBean();
         ModifiedBean modifiedBean = new ModifiedBean();
-        modifiedBean.setLast_modified(String.valueOf(System.currentTimeMillis() / 1000));
+        modifiedBean.setLast_modified(String.valueOf(System.currentTimeMillis() / 1000));  //TODO
         modifiedBean.setEtag("1");
         clientDataBean.setUrl(url);
         clientDataBean.setModifiedBean(modifiedBean);

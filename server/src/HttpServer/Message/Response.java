@@ -42,41 +42,11 @@ public class Response {
         return serverJsonReader.createResponse(request);
     }
 
-//    private static Response createByGet(Request request) {
-//        String url = request.getUrl();
-//        Response response = new Response();
-//        try {
-//            InputStream resource = HttpServer.class.getResourceAsStream(HttpServer.ROOT_PATH + url);
-//            assert resource != null;
-//            BufferedReader bf = new BufferedReader(new InputStreamReader(resource));
-//            StringBuilder sb = new StringBuilder();
-//            String line;
-//            while ((line = bf.readLine()) != null) {
-//                sb.append(line);
-//                sb.append("\r\n");
-//            }
-//            String message = sb.toString();
-//            response.setVersion("HTTP/1.1");
-//            response.setCode("200");
-//            response.setStatus("OK");
-//            Map<String, String> map = new HashMap<>();
-//            map.put("Content-Type", " text/html");
-//            map.put("Content-Length", " " + String.valueOf(message.getBytes(StandardCharsets.UTF_8).length));
-//            response.setHeader(map);
-//            response.setMessage(message);
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        return response;
-//    }
 
-//    private static Response createByPost(Request request) {
-//        return null;
-//    }
 
     private static void decodeResponseLine(BufferedReader bf, Response response) throws IOException {
         String firstLine = bf.readLine();
-        String[] lines = firstLine.split(" ");
+        String[] lines = firstLine.split(" ", 3);
         assert lines.length == 3;
         response.setVersion(lines[0]);
         response.setCode(lines[1]);
@@ -99,8 +69,7 @@ public class Response {
         if (messageLen != 0) {
             char[] chars = new char[messageLen];
             int readByte = bf.read(chars);
-            assert readByte == messageLen;
-            String message = new String(chars);
+            String message = new String(chars).substring(0, readByte);
             response.setMessage(message);
         }
     }

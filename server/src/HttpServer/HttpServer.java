@@ -4,10 +4,12 @@ import java.net.*;
 
 public class HttpServer {
 
-    public static final String ROOT_PATH = "webRoot"; //资源存放路径
+    public static final String ROOT_PATH = "cache/webRoot"; //资源存放路径
     public static final int DEFAULT_PORT = 8080; //默认8080端口
 
-
+    /***
+     * 启动服务器，开始监听
+     */
     public static void start(){
         ServerSocket serverSocket;
         try {
@@ -23,6 +25,11 @@ public class HttpServer {
             e.printStackTrace();
         }
     }
+
+    /***
+     * 每当收到连接请求，实例化一个HttpTask对象，新建一个thread去执行
+     * @param socket 与client建立连接的socket
+     */
     private static void service(Socket socket) {
         HttpTask httpTask = new HttpTask(socket);
         Thread thread = new Thread(httpTask);

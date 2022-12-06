@@ -14,12 +14,21 @@ public class HttpClient {
     private final String hostname;
     private final int port;
 
+    private Socket client;
+
     private final ClientJsonReader clientJsonReader;
 
     HttpClient(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
         clientJsonReader = new ClientJsonReader();
+        try {
+            client = new Socket(hostname, port);
+            System.out.println("连接到主机：" + hostname + " ,端口号：" + port);
+            System.out.println("远程主机地址：" + client.getRemoteSocketAddress());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /***
@@ -28,10 +37,6 @@ public class HttpClient {
      */
     public void get(String url) {
         try {
-            Socket client = new Socket(hostname, port);
-            System.out.println("连接到主机：" + hostname + " ,端口号：" + port);
-            System.out.println("远程主机地址：" + client.getRemoteSocketAddress());
-
             Request request = Request.buildRequest(url);
             reRequest(request);
             System.out.print(request);
@@ -58,10 +63,6 @@ public class HttpClient {
 
     public void post(String url, String user_name, String password) {
         try {
-            Socket client = new Socket(hostname, port);
-            System.out.println("连接到主机：" + hostname + " ,端口号：" + port);
-            System.out.println("远程主机地址：" + client.getRemoteSocketAddress());
-
             Request request = Request.buildRequest(url);
             switchToPost(request, user_name, password);
             System.out.print(request);
