@@ -1,7 +1,9 @@
 # 提醒
 
 ## 务必更改前pull，更改后push！
+
 ## 除非知道自己更改的是什么，否则merge时一律accept theirs，以远端为准！
+
 ## 请在commit message中简单写明更改的目的！
 
 ---
@@ -12,11 +14,11 @@
 
 > Good luck and have fun!
 
-##  说明：
+## 说明：
 
 ### 1. 不允许基于netty等框架，完全基于Java Socket API进行编写
 
-### 2. 不分区使用的IO模型，BIO、NIO和AIO都可以 
+### 2. 不分区使用的IO模型，BIO、NIO和AIO都可以
 
 ### 3. 实现基础的HTTP请求、响应功能，具体要求如下：
 
@@ -44,7 +46,8 @@
 
 ## 2 服务器
 
-**HttpServer类通过静态方法start()实例化一个ServerSocket监听指定端口(default:8080)，每当收到一个连接请求，将该次请求封装成一个HttpTask对象，实现Runnable接口多线程，以支持同时有多个http请求**
+**HttpServer类通过静态方法start()实例化一个ServerSocket监听指定端口(default:8080)
+，每当收到一个连接请求，将该次请求封装成一个HttpTask对象，实现Runnable接口多线程，以支持同时有多个http请求**
 
 ## 3 客户端
 
@@ -73,7 +76,11 @@
 
 **https://www.cnblogs.com/chris-cp/p/5082514.html**
 **https://blog.csdn.net/YaoLang1995/article/details/89316912**
-**https://blog.csdn.net/linhao_obj/article/details/120767149?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=3**
+
+*
+
+*https://blog.csdn.net/linhao_obj/article/details/120767149?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-120767149-blog-89316912.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=3
+**
 **https://blog.csdn.net/weixin_42316952/article/details/114081588**
 **https://developer.mozilla.org/zh-CN/docs/Web/HTTP**
 **https://zhuanlan.zhihu.com/p/388270712**

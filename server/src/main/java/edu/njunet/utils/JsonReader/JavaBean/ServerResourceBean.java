@@ -1,4 +1,4 @@
-package utils.JsonReader.JavaBean;
+package edu.njunet.utils.JsonReader.JavaBean;
 
 import java.util.List;
 
@@ -15,7 +15,11 @@ public class ServerResourceBean {
         resourceList = list;
     }
 
-    public List<LoginDataBean> getLogin() {return Login; }
+    public List<LoginDataBean> getLogin() {
+        return Login;
+    }
 
-    public void setLogin(List<LoginDataBean> lb) {Login = lb; }
+    public void setLogin(List<LoginDataBean> lb) {
+        Login = lb;
+    }
 }
