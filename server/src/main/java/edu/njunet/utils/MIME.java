@@ -1,38 +1,37 @@
-package edu.njunet.utils;
+package utils;
 
 import java.util.HashMap;
 
 public class MIME {
-    public static HashMap<String, String> MIMEList = new HashMap<>();
-    public static HashMap<String, String> reverseMiMeList = new HashMap<>(); // key value 反转
-    public static MIME mime = new MIME();
-
+    private static HashMap<String , String> MIMEList = new HashMap<>();
+    private static HashMap<String, String> reverseMiMeList = new HashMap<>(); // key value 反转
+    private static MIME mime = null;
     /**
      * 构造函数，将MIME类型载入
      */
-    public MIME() {
+    private MIME(){
         // text
-        MIMEList.put(".htm", "text/html");
+        MIMEList.put(".htm","text/html");
         MIMEList.put(".html", "text/html");
-        MIMEList.put(".css", "text/css");
-        MIMEList.put(".csv", "text/csv");
-        MIMEList.put(".ics", "text/calendar");
-        MIMEList.put(".js", "text/javascript");
+        MIMEList.put(".css","text/css");
+        MIMEList.put(".csv","text/csv");
+        MIMEList.put(".ics","text/calendar");
+        MIMEList.put(".js","text/javascript");
         MIMEList.put(".mjs", "text/javascript");
         MIMEList.put(".txt", "text/plain; charset=utf-8");
         // image
         MIMEList.put(".png", "image/png");
         MIMEList.put(".jpg", "image/jpeg");
-        MIMEList.put(".jpeg", "image/jpeg");
+        MIMEList.put(".jpeg","image/jpeg");
         MIMEList.put(".gif", "image/gif");
         MIMEList.put(".svg", "image/svg+xml");
         MIMEList.put(".tif", "image/tiff");
         MIMEList.put(".tiff", "image/tiff");
-        MIMEList.put(".webp", "image/webp");
-        MIMEList.put(".ico", "image/vnd.microsoft.icon");
-        MIMEList.put(".bmp", "image/bmp");
+        MIMEList.put(".webp","image/webp");
+        MIMEList.put(".ico","image/vnd.microsoft.icon");
+        MIMEList.put(".bmp","image/bmp");
         // video
-        MIMEList.put(".avi", "video/x-msvideo");
+        MIMEList.put(".avi","video/x-msvideo");
         MIMEList.put(".mp4", "video/mp4");
         MIMEList.put(".mpeg", "video/mpeg");
         MIMEList.put(".ogv", "video/ogg");
@@ -49,14 +48,14 @@ public class MIME {
         MIMEList.put(".midi", "audio/x-midi");
         MIMEList.put(".opus", "audio/opus");
         MIMEList.put(".weba", "audio/webm");
-        for (String val : MIMEList.keySet()) {
+        for (String val :MIMEList.keySet()){
             reverseMiMeList.put(MIMEList.get(val), val);
         }
 
     }
 
-    public static MIME getMimeList() {
-        if (MIME.mime == null) {
+    public static MIME getMimeList(){
+        if (MIME.mime == null){
             MIME.mime = new MIME();
         }
         return MIME.mime;
@@ -65,11 +64,10 @@ public class MIME {
     /**
      * return mime_type according to the uri
      * if not found, return application/octet-stream
-     *
      * @param Uri
      * @return
      */
-    public String getMimeType(String Uri) {
+    public String getMimeType(String Uri){
         int loc_point = Uri.lastIndexOf(".");
         if (loc_point == -1) return "application/octet-stream";
         String end = Uri.substring(loc_point);
@@ -79,13 +77,10 @@ public class MIME {
     /**
      * return key according to the value
      * if not found, return .bin (application/octet*stream)
-     *
      * @param mime
      * @return
      */
-    public String getReverseMimeType(String mime) {
-        return reverseMiMeList.getOrDefault(mime, ".bin");
-    }
+    public String getReverseMimeType(String mime){return reverseMiMeList.getOrDefault(mime, ".bin");}
 
 
 }
