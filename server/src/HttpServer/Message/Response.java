@@ -134,7 +134,19 @@ public class Response {
             sb.append(text());
         }
 
-
         return sb.toString();
+    }
+
+    public void send(OutputStream out) throws IOException {
+        String responseLine = version + " " + String.valueOf(code) + " " + status + "\r\n";
+        out.write(responseLine.getBytes(StandardCharsets.UTF_8));
+        for (Map.Entry<String, String> entry : header.entrySet()) {
+            String tmp = entry.getKey() + ":" + entry.getValue() + "\r\n";
+            out.write(tmp.getBytes(StandardCharsets.UTF_8));
+        }
+        out.write("\r\n".getBytes(StandardCharsets.UTF_8));
+        if (message != null) {
+            out.write(message);
+        }
     }
 }

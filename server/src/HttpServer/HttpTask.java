@@ -37,7 +37,7 @@ public class HttpTask implements Runnable{
                         assert response != null;
                         System.out.println(response);
                         OutputStream outToClient = socket.getOutputStream();
-                        outToClient.write(response.toString().getBytes(StandardCharsets.UTF_8));
+                        response.send(outToClient);
                     }
                     Thread.sleep(1000);
                 }

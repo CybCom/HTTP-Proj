@@ -147,6 +147,7 @@ public class ServerJsonReader {
             }
 
         }
+
         Map<String, String>map = response.getHeader();
         if (map == null) {
             map = new HashMap<>();
