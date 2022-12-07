@@ -48,13 +48,13 @@ public class Request {
      */
     private static void decodeRequestLineAndHeader(InputStream reqStream, Request request) throws IOException {
         List<String> lines = getLines(reqStream);
-        String[] line = lines.get(0).split(" ", 3);
+        String[] line = lines.get(0).replace("\r\n", "").split(" ", 3);
         request.setVersion(line[2]);
         request.setUrl(line[1]);
         request.setMethod(line[0]);
         Map<String, String> header = new HashMap<>();
         for (int i = 1; i < lines.size()-1; i++) {
-            String[] entry = lines.get(i).split(":", 2);
+            String[] entry = lines.get(i).replace("\r\n", "").split(":", 2);
             header.put(entry[0], entry[1]);
         }
         request.setHeader(header);
@@ -70,7 +70,6 @@ public class Request {
         while (reqStream.available() > 0) {
             int b = reqStream.read();
             buffer[++i] = (byte) b;
-            System.out.println(b + " " + (i));
             if (i >= 1 && (buffer[i-1] == '\r') && (buffer[i] == '\n')) {
                 byte[] line = Arrays.copyOfRange(buffer, 0, i+1);
                 lines.add(new String(line, StandardCharsets.UTF_8));
@@ -153,7 +152,7 @@ public class Request {
         if (message != null) {
             sb.append(text());
         }
-        sb.append("\r\n");
+
 
         return sb.toString();
     }

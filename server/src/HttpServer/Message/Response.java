@@ -43,13 +43,13 @@ public class Response {
      */
     private static void decodeResponseLineAndHeader(InputStream resStream, Response response) throws IOException {
         List<String> lines = getLines(resStream);
-        String[] line = lines.get(0).split(" ", 3);
+        String[] line = lines.get(0).replace("\r\n", "").split(" ", 3);
         response.setVersion(line[0]);
         response.setCode(line[1]);
         response.setStatus(line[2]);
         Map<String, String> header = new HashMap<>();
         for (int i = 1; i < lines.size()-1; i++) {
-            String[] entry = lines.get(i).split(":", 2);
+            String[] entry = lines.get(i).replace("\r\n", "").split(":", 2);
             header.put(entry[0], entry[1]);
         }
         response.setHeader(header);
@@ -65,7 +65,6 @@ public class Response {
         while (resStream.available() > 0) {
             int b = resStream.read();
             buffer[++i] = (byte) b;
-            System.out.println(b + " " + (i));
             if (i >= 1 && (buffer[i-1] == '\r') && (buffer[i] == '\n')) {
                 byte[] line = Arrays.copyOfRange(buffer, 0, i+1);
                 lines.add(new String(line, StandardCharsets.UTF_8));
@@ -131,8 +130,10 @@ public class Response {
             sb.append(tmp);
         }
         sb.append("\r\n");
-        sb.append(text());
-        sb.append("\r\n");
+        if (message != null) {
+            sb.append(text());
+        }
+
 
         return sb.toString();
     }
