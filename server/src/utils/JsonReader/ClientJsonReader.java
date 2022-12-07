@@ -17,9 +17,11 @@ import java.util.Map;
 import static utils.SystemTime.systemTime;
 
 public class ClientJsonReader {
-    private final static String file_path = "D:/HTTP/HTTP-Proj/client/src/HttpClient/cache/resourceManagement.json";
+    private final static String file_path = "C:/Users/lenovo-002/HTTP-Proj/client/src/HttpClient/cache/resourceManagement.json";
 
-    private final static String stored_path = "D:/HTTP/HTTP-Proj/client/src/HttpClient/cache/";
+    private final static String stored_root = "client/src/HttpClient/";
+
+    private final static String stored_path = "cache";
     private final ClientResourceBean resourceBean;
 
     public ClientJsonReader() {
@@ -80,7 +82,7 @@ public class ClientJsonReader {
                 }
 
                 addOneDataBean(url);
-                FileUtil.writeBytes(response.content(), new File(stored_path+url));
+                FileUtil.writeBytes(response.content(), new File(stored_root+stored_path+url));
                 return 1;
             }
             case 301: {
@@ -96,7 +98,7 @@ public class ClientJsonReader {
                 }
 
                 addOneDataBean(new_url);
-                FileUtil.writeBytes(response.content(), new File(stored_path+new_url));
+                FileUtil.writeBytes(response.content(), new File(stored_root+stored_path+new_url));
                 return 1;
             }
             case 304: {

@@ -131,7 +131,12 @@ public class ServerJsonReader {
             }
             case 302 -> {
                 response.setStatus("Found");
-                response.setMessage(ReturnMessage(request.getUrl()));
+                for (ServerDataBean list : resourceBean.getResourceList()) {
+                    if (list.getUrl().equals(request.getUrl())) {
+                        response.setMessage(ReturnMessage(list.getReLocationJudge().getNew_url()));
+                    }
+                }
+
             }
             case 304 -> {
                 response.setStatus("Not Modified");
@@ -153,7 +158,9 @@ public class ServerJsonReader {
             map = new HashMap<>();
         }
         map.put("Connection","keep-alive");
-        map.put("Content-Length", String.valueOf(response.content().length));
+        if (response.content() != null) {
+            map.put("Content-Length", String.valueOf(response.content().length));
+        }
         for (ServerDataBean list : resourceBean.getResourceList()) {
             if (list.getUrl().equals(request.getUrl())) {
                 map.put("Date", systemTime());
@@ -191,7 +198,7 @@ public class ServerJsonReader {
         String[] lastFic = last_modified[4].split(":");
         int res;
         res = (Integer.parseInt(date[3]) - Integer.parseInt(last_modified[3]))*365*24*60*60
-                + (Integer.parseInt(date[2]) - Integer.parseInt(last_modified[2]))*30*24*60*60
+                + (Integer.parseInt(MonthToNum.Month_Map.get(date[2])) - Integer.parseInt(MonthToNum.Month_Map.get(last_modified[2])))*30*24*60*60
                 + (Integer.parseInt(date[1]) - Integer.parseInt(last_modified[1]))*24*60*60
                 + (Integer.parseInt(dateFic[0]) - Integer.parseInt(lastFic[0]))*60*60
                 + (Integer.parseInt(dateFic[1]) - Integer.parseInt(lastFic[1]))*60

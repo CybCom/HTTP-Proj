@@ -67,13 +67,15 @@ public class HttpClient {
         try {
             Request request = Request.buildRequest(url);
             switchToPost(request, user_name, password);
-            System.out.print(request);
+            System.out.println(request);
             OutputStream outToServer = client.getOutputStream();
             outToServer.write(request.toString().getBytes(StandardCharsets.UTF_8));
 
             InputStream inFromServer = client.getInputStream();
+            while (inFromServer.available() == 0) { //服务器给响应了才继续
+            }
             Response response = Response.parseResponse(inFromServer);
-            System.out.print(response);
+            System.out.println(response);
 
             client.close();
         } catch (IOException ex) {
