@@ -10,8 +10,12 @@ import utils.MonthToNum;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashMap;
 import java.util.Map;
+
+import static utils.SystemTime.systemTime;
 
 public class ServerJsonReader {
     private final static String file_path = "C:/Users/lenovo-002/HTTP-Proj/server/src/HttpServer/cache/resourceManagement.json";
@@ -49,14 +53,14 @@ public class ServerJsonReader {
         try{
             for(ServerDataBean list : resourceBean.getResourceList()){
                 if(request.getUrl().equals(list.getUrl())){
-                    if(request.getMethod().equals(list.getAllow())){
+                    if(list.getAllow().contains(request.getMethod())){
                         boolean contains = request.getHeader().containsKey("If-None-Match") ||
                                 request.getHeader().containsKey("If-Modified-Since");
                         if(contains){//304
                             if(request.getHeader().containsKey("If-None-Match")){//TODO maybe change
                                 for(ServerDataBean findEtag : resourceBean.getResourceList()){
-                                    if(request.getHeader().get("If-None-Match").equals(
-                                            findEtag.getModifiedJudge().getEtag())){//TODO 弱比较方法
+                                    if(request.getHeader().get("If-None-Match").contains(
+                                            findEtag.getModifiedJudge().getEtag())){//TODO 弱比较方法 contains || equals
                                         return "304";
                                     }
                                 }
@@ -69,7 +73,8 @@ public class ServerJsonReader {
                                         + sModified[1]+ sModified[4];
                                 String requestModified = rModified[3]+ MonthToNum.Month_Map.get(rModified[2])
                                         + rModified[1]+ rModified[4];
-                                if(sourceModified.compareTo(requestModified) <= 0){//远端资源的 Last-Modified 首部标识的日期比在该首部中列出的值要更早，
+                                if(sourceModified.compareTo(requestModified) <= 0){// 远端资源的 Last-Modified 首部标识的日期
+                                                                                   // 比在该首部中列出的值要更早，
                                                                                    // 条件匹配不成功
                                     return "304";
                                 }else {
@@ -106,12 +111,19 @@ public class ServerJsonReader {
         switch (response.getCode()) {
             case 200 -> {          //头部有 Cache-Control, Content-Location, Date, ETag, Expires，和 Vary.
                 response.setStatus("OK");
+                if(response.getHeader() == null){
+                    response.setHeader(new HashMap<>());
+                }
+                response.getHeader().put("Vary","Accept-Encoding");
                 response.setMessage(ReturnMessage(request.getUrl()));
             }
             case 301 -> {
                 response.setStatus("Moved Permanently");
                 for (ServerDataBean list : resourceBean.getResourceList()) {
                     if (list.getUrl().equals(request.getUrl())) {
+                        if(response.getHeader() == null){
+                            response.setHeader(new HashMap<>());
+                        }
                         response.getHeader().put("Location", list.getReLocationJudge().getNew_url());
                     }
                 }
@@ -121,18 +133,34 @@ public class ServerJsonReader {
                 response.setStatus("Found");
                 response.setMessage(ReturnMessage(request.getUrl()));
             }
-            case 304 -> response.setStatus("Not Modified");
+            case 304 -> {
+                response.setStatus("Not Modified");
+                if(response.getHeader() == null){
+                    response.setHeader(new HashMap<>());
+                }
+                response.getHeader().put("Vary","Accept-Encoding");
+            }
             case 404 -> response.setStatus("Not Found");
             case 405 -> response.setStatus("Method Not Allowed");
             case 500 -> response.setStatus("Internal Server Error");
             default -> {
             }
+
         }
         Map<String, String>map = response.getHeader();
         if (map == null) {
             map = new HashMap<>();
         }
+        map.put("Connection","keep-alive");
         map.put("Content-Length", String.valueOf(response.content().length));
+        for (ServerDataBean list : resourceBean.getResourceList()) {
+            if (list.getUrl().equals(request.getUrl())) {
+                map.put("Date", systemTime());
+                int maxAge = maxAge(list.getModifiedJudge().getLast_modified(),systemTime());
+                map.put("Cache-Control","public,"+ String.valueOf(maxAge));
+                map.put("Expires",expiresTime(maxAge));
+            }
+        }
         response.setHeader(map);
     }
 
@@ -154,6 +182,31 @@ public class ServerJsonReader {
         }
         return null;
     }
+
+    private int maxAge(String Last_modified, String Date){
+        String[] date = Date.split(" ");
+        String[] last_modified = Last_modified.split(" ");
+        String[] dateFic = date[4].split(":");
+        String[] lastFic = last_modified[4].split(":");
+        int res;
+        res = (Integer.parseInt(date[3]) - Integer.parseInt(last_modified[3]))*365*24*60*60
+                + (Integer.parseInt(date[2]) - Integer.parseInt(last_modified[2]))*30*24*60*60
+                + (Integer.parseInt(date[1]) - Integer.parseInt(last_modified[1]))*24*60*60
+                + (Integer.parseInt(dateFic[0]) - Integer.parseInt(lastFic[0]))*60*60
+                + (Integer.parseInt(dateFic[1]) - Integer.parseInt(lastFic[1]))*60
+                + (Integer.parseInt(dateFic[2]) - Integer.parseInt(lastFic[2]));
+        return res/10;
+    }
+
+    private String expiresTime(int maxage){//todo 默认一年
+        java.util.Date date = new Date();
+        date.setTime(System.currentTimeMillis() + maxage* 1000L);
+        String dateStr = date.toString();
+        String[] dateSt = dateStr.split(" ");
+        return dateSt[0]+ ", "+ dateSt[2]+ " "+ dateSt[1]
+                + " "+ dateSt[5]+ " "+ dateSt[3]+ " GMT";
+    }
+
 
     public static void main(String[] args) {
         ServerJsonReader serverJsonReader = ServerJsonReader.getInstance();

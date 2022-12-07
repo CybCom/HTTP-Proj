@@ -10,13 +10,16 @@ import utils.JsonReader.JavaBean.ClientResourceBean;
 import utils.JsonReader.JavaBean.ModifiedBean;
 
 import java.io.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ClientJsonReader {
-    private final static String file_path = "C:/Users/lenovo-002/HTTP-Proj/client/src/HttpClient/cache/resourceManagement.json";
+import static utils.SystemTime.systemTime;
 
-    private final static String stored_path = "C:/Users/lenovo-002/HTTP-Proj/client/src/HttpClient/cache";
+public class ClientJsonReader {
+    private final static String file_path = "D:/HTTP/HTTP-Proj/client/src/HttpClient/cache/resourceManagement.json";
+
+    private final static String stored_path = "D:/HTTP/HTTP-Proj/client/src/HttpClient/cache/";
     private final ClientResourceBean resourceBean;
 
     public ClientJsonReader() {
@@ -70,7 +73,7 @@ public class ClientJsonReader {
                 List<ClientDataBean> resourceList = resourceBean.getResourceList();
                 for (ClientDataBean clientDataBean : resourceList) {
                     if (url.equals(clientDataBean.getUrl())) {
-                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000)); //TODO
+                        clientDataBean.getModifiedBean().setLast_modified(systemTime()); //TODO
                         FileUtil.writeBytes(response.content(), new File(clientDataBean.getPath()));
                         return 1;
                     }
@@ -86,7 +89,7 @@ public class ClientJsonReader {
                 for (ClientDataBean clientDataBean : resourceList) {
                     if (url.equals(clientDataBean.getUrl())) {
                         clientDataBean.setUrl(new_url);
-                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000)); //TODO
+                        clientDataBean.getModifiedBean().setLast_modified(systemTime()); //TODO
                         FileUtil.writeBytes(response.content(), new File(clientDataBean.getPath()));
                         return 1;
                     }
@@ -101,7 +104,7 @@ public class ClientJsonReader {
                 List<ClientDataBean> resourceList = resourceBean.getResourceList();
                 for (ClientDataBean clientDataBean : resourceList) {
                     if (url.equals(clientDataBean.getUrl())) {
-                        clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000)); //TODO
+                        clientDataBean.getModifiedBean().setLast_modified(systemTime()); //TODO
                         resource_path = clientDataBean.getPath();
                     }
                 }
@@ -123,7 +126,6 @@ public class ClientJsonReader {
                 return 0;
         }
     }
-
     /***
      * 向ClientResourceBean的ResourceList中加入一条DataBean
      * @param url client请求的url
@@ -131,7 +133,7 @@ public class ClientJsonReader {
     private void addOneDataBean(String url) {
         ClientDataBean clientDataBean = new ClientDataBean();
         ModifiedBean modifiedBean = new ModifiedBean();
-        modifiedBean.setLast_modified(String.valueOf(System.currentTimeMillis() / 1000));  //TODO
+        modifiedBean.setLast_modified(systemTime());  //TODO
         modifiedBean.setEtag("1");
         clientDataBean.setUrl(url);
         clientDataBean.setModifiedBean(modifiedBean);
