@@ -1,6 +1,7 @@
 {"ResourceList" :
 [{"Url": "/test.html", "Allow": "GET", "ModifiedJudge": {"Last_modified": "2022.12.15", "Etag": " "}, "ReLocationJudge": {"IsMove": false, "New_url": "null", "IsPermanent": false}},
-  {"Url": "/test2.html", "Allow": "post", "ModifiedJudge": {"Last_modified": "2022.12.15", "Etag": " "}, "ReLocationJudge": {"IsMove": false, "New_url": "null", "IsPermanent": false}}
+  {"Url": "/tomb_raider.png", "Allow": "GET", "ModifiedJudge": {"Last_modified": "2022.12.15", "Etag": " "}, "ReLocationJudge": {"IsMove": false, "New_url": "null", "IsPermanent": false}},
+  {"Url": "/1.png", "Allow": "GET", "ModifiedJudge": {"Last_modified": "2022.12.15", "Etag": " "}, "ReLocationJudge": {"IsMove": false, "New_url": "null", "IsPermanent": false}}
 ],
   "Login" : [{"User_name": "张三", "Password": "12346789", "Last_login": ""}, {"User_name": "李四", "Password": "987654321", "Last_login": ""}, {"User_name": "鸡哥", "Password": "树枝666", "Last_login": ""}]
 }

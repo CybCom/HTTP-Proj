@@ -41,7 +41,7 @@ public class HttpClient {
             reRequest(request);
             System.out.println(request);
             OutputStream outToServer = client.getOutputStream();
-            outToServer.write(request.toString().getBytes(StandardCharsets.UTF_8));
+            request.send(outToServer);
 
             InputStream inFromServer = client.getInputStream();
             while (inFromServer.available() == 0) { //服务器给响应了才继续

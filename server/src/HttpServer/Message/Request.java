@@ -2,10 +2,7 @@ package HttpServer.Message;
 
 import utils.DefaultRequestHead;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -153,7 +150,19 @@ public class Request {
             sb.append(text());
         }
 
-
         return sb.toString();
+    }
+
+    public void send(OutputStream out) throws IOException {
+        String requestLine = method + " " + url + " " + version + "\r\n";
+        out.write(requestLine.getBytes(StandardCharsets.UTF_8));
+        for (Map.Entry<String, String> entry : header.entrySet()) {
+            String tmp = entry.getKey() + ":" + entry.getValue() + "\r\n";
+            out.write(tmp.getBytes(StandardCharsets.UTF_8));
+        }
+        out.write("\r\n".getBytes(StandardCharsets.UTF_8));
+        if (message != null) {
+            out.write(message);
+        }
     }
 }
