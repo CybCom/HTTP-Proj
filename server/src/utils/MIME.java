@@ -72,7 +72,6 @@ public class MIME {
         if (loc_point == -1) return "application/octet-stream";
         String end = Uri.substring(loc_point);
         return MIMEList.getOrDefault(end, "application/octet-stream");
-
     }
 
     /**

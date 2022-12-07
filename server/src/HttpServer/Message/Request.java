@@ -1,6 +1,7 @@
 package HttpServer.Message;
 
 import utils.DefaultRequestHead;
+import utils.MIME;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -37,6 +38,7 @@ public class Request {
         request.setUrl(url);
         request.setVersion("HTTP/1.1");
         request.setHeader(DefaultRequestHead.DEFAULT_HEADER);
+        request.getHeader().put("Content-Type", MIME.mime.getMimeType(request.getUrl()));
         return request;
     }
 
