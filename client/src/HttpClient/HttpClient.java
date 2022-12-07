@@ -32,6 +32,17 @@ public class HttpClient {
     }
 
     /***
+     * 关闭服务器的socket资源
+     */
+    public void close() {
+        try {
+            client.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /***
      * 发送get请求
      * @param url 待请求的url
      */
@@ -48,11 +59,18 @@ public class HttpClient {
             }
             Response response = Response.parseResponse(inFromServer);
             handleResponse(response, url);
-            System.out.println(response);
+//            System.out.println(response);
 
-            client.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ex) {
+            try {
+                client = new Socket(hostname, port);
+                System.out.println("超时，重新建立连接！");
+                System.out.println("连接到主机：" + hostname + " ,端口号：" + port);
+                System.out.println("远程主机地址：" + client.getRemoteSocketAddress());
+                get(url);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -77,9 +95,16 @@ public class HttpClient {
             Response response = Response.parseResponse(inFromServer);
             System.out.println(response);
 
-            client.close();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            try {
+                client = new Socket(hostname, port);
+                System.out.println("超时，重新建立连接！");
+                System.out.println("连接到主机：" + hostname + " ,端口号：" + port);
+                System.out.println("远程主机地址：" + client.getRemoteSocketAddress());
+                post(url, user_name, password);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -3,13 +3,13 @@ package utils;
 import java.util.HashMap;
 
 public class MIME {
-    public static HashMap<String , String> MIMEList = new HashMap<>();
-    public static HashMap<String, String> reverseMiMeList = new HashMap<>(); // key value 反转
-    public static MIME mime = null;
+    private static HashMap<String , String> MIMEList = new HashMap<>();
+    private static HashMap<String, String> reverseMiMeList = new HashMap<>(); // key value 反转
+    private static MIME mime = null;
     /**
      * 构造函数，将MIME类型载入
      */
-    public MIME(){
+    private MIME(){
         // text
         MIMEList.put(".htm","text/html");
         MIMEList.put(".html", "text/html");

@@ -116,7 +116,7 @@ public class ServerJsonReader {
                     response.setHeader(new HashMap<>());
                 }
                 response.getHeader().put("Vary","Accept-Encoding");
-                response.getHeader().put("Content-Type", MIME.mime.getMimeType(request.getUrl()));
+                response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(request.getUrl()));
                 response.setMessage(ReturnMessage(request.getUrl()));
             }
             case 301 -> {
@@ -127,7 +127,7 @@ public class ServerJsonReader {
                             response.setHeader(new HashMap<>());
                         }
                         response.getHeader().put("Location", list.getReLocationJudge().getNew_url());
-                        response.getHeader().put("Content-Type", MIME.mime.getMimeType(list.getReLocationJudge().getNew_url()));
+                        response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(list.getReLocationJudge().getNew_url()));
                     }
                 }
                 response.setMessage(ReturnMessage(response.getHeader().get("Location")));
@@ -137,7 +137,7 @@ public class ServerJsonReader {
                 for (ServerDataBean list : resourceBean.getResourceList()) {
                     if (list.getUrl().equals(request.getUrl())) {
                         response.setMessage(ReturnMessage(list.getReLocationJudge().getNew_url()));
-                        response.getHeader().put("Content-Type", MIME.mime.getMimeType(list.getReLocationJudge().getNew_url()));
+                        response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(list.getReLocationJudge().getNew_url()));
                     }
                 }
 
@@ -148,7 +148,7 @@ public class ServerJsonReader {
                     response.setHeader(new HashMap<>());
                 }
                 response.getHeader().put("Vary","Accept-Encoding");
-                response.getHeader().put("Content-Type", MIME.mime.getMimeType(request.getUrl()));
+                response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(request.getUrl()));
             }
             case 404 -> response.setStatus("Not Found");
             case 405 -> response.setStatus("Method Not Allowed");
@@ -221,8 +221,4 @@ public class ServerJsonReader {
     }
 
 
-    public static void main(String[] args) {
-        ServerJsonReader serverJsonReader = ServerJsonReader.getInstance();
-        System.out.println(JSON.toJSONString(serverJsonReader.resourceBean));
-    }
 }

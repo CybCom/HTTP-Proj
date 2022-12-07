@@ -38,7 +38,7 @@ public class Request {
         request.setUrl(url);
         request.setVersion("HTTP/1.1");
         request.setHeader(DefaultRequestHead.DEFAULT_HEADER);
-        request.getHeader().put("Content-Type", MIME.mime.getMimeType(request.getUrl()));
+        request.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(request.getUrl()));
         return request;
     }
 
