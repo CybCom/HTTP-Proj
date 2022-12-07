@@ -71,13 +71,13 @@ public class ClientJsonReader {
                 for (ClientDataBean clientDataBean : resourceList) {
                     if (url.equals(clientDataBean.getUrl())) {
                         clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000)); //TODO
-                        FileUtil.writeUtf8String(response.getMessage(), new File(clientDataBean.getPath()));
+                        FileUtil.writeBytes(response.content(), new File(clientDataBean.getPath()));
                         return 1;
                     }
                 }
 
                 addOneDataBean(url);
-                FileUtil.writeUtf8String(response.getMessage(), new File(stored_path+url));
+                FileUtil.writeBytes(response.content(), new File(stored_path+url));
                 return 1;
             }
             case 301: {
@@ -87,13 +87,13 @@ public class ClientJsonReader {
                     if (url.equals(clientDataBean.getUrl())) {
                         clientDataBean.setUrl(new_url);
                         clientDataBean.getModifiedBean().setLast_modified(String.valueOf(System.currentTimeMillis()/1000)); //TODO
-                        FileUtil.writeUtf8String(response.getMessage(), new File(clientDataBean.getPath()));
+                        FileUtil.writeBytes(response.content(), new File(clientDataBean.getPath()));
                         return 1;
                     }
                 }
 
                 addOneDataBean(new_url);
-                FileUtil.writeUtf8String(response.getMessage(), new File(stored_path+new_url));
+                FileUtil.writeBytes(response.content(), new File(stored_path+new_url));
                 return 1;
             }
             case 304: {
@@ -108,15 +108,15 @@ public class ClientJsonReader {
                 assert resource_path != null;
                 InputStream resource = HttpClient.class.getResourceAsStream(resource_path);
                 assert resource != null;
-                BufferedReader bf = new BufferedReader(new InputStreamReader(resource));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = bf.readLine()) != null) {
-                    sb.append(line);
-                    sb.append("\r\n");
+                int remainingByte = resource.available();
+                byte[] buffer = new byte[remainingByte];
+                int i = 0;
+                while (remainingByte > 0) {
+                    int alreadyRead = resource.read(buffer, i, remainingByte);
+                    remainingByte -= alreadyRead;
+                    i += alreadyRead;
                 }
-                String message = sb.toString();
-                response.setMessage(message);
+                response.setMessage(buffer);
                 return 0;
             }
             default:

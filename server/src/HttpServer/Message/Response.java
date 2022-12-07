@@ -4,8 +4,7 @@ import utils.JsonReader.ServerJsonReader;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Response {
     private String version;
@@ -16,64 +15,91 @@ public class Response {
 
     private Map<String, String> header;
 
-    private String message;
+    private byte[] message;
 
-    /**
+    /** 解析inputSteam流，返回一个Response对象,用于client接受来自server的响应
      * @param rspStream inputSteam流
      * @return 一个Response对象,用于client接受来自server的响应
      */
-    //解析inputSteam流，返回一个Response对象,用于client接受来自server的响应
     public static Response parseResponse(InputStream rspStream) throws IOException {
         Response response = new Response();
-        BufferedReader bf = new BufferedReader(new InputStreamReader(rspStream, StandardCharsets.UTF_8));
-        decodeResponseLine(bf, response);
-        decodeResponseHeader(bf, response);
-        decodeResponseMessage(bf, response);
+        decodeResponseLineAndHeader(rspStream, response);
+        decodeResponseMessage(rspStream, response);
         return response;
     }
 
-    /**
+    /** 用于在server端创建将要发送的response
      * @param request Request类（客户端发出的消息）
      * @return 在server端将要发送的response
      */
-    //用于在server端创建将要发送的response
     public static Response buildResponse(Request request) {
         ServerJsonReader serverJsonReader = ServerJsonReader.getInstance();
         return serverJsonReader.createResponse(request);
     }
 
 
-
-    private static void decodeResponseLine(BufferedReader bf, Response response) throws IOException {
-        String firstLine = bf.readLine();
-        String[] lines = firstLine.split(" ", 3);
-        assert lines.length == 3;
-        response.setVersion(lines[0]);
-        response.setCode(lines[1]);
-        response.setStatus(lines[2]);
-    }
-
-    private static void decodeResponseHeader(BufferedReader bf, Response response) throws IOException {
-        Map<String, String> map = new HashMap<>();
-        String line;
-        while (!(line = bf.readLine()).equals("")) {
-            String[] lines = line.split(":");
-            assert lines.length == 2;
-            map.put(lines[0], lines[1]);
+    /***
+     * 设置response的行和头
+     */
+    private static void decodeResponseLineAndHeader(InputStream resStream, Response response) throws IOException {
+        List<String> lines = getLines(resStream);
+        String[] line = lines.get(0).split(" ", 3);
+        response.setVersion(line[0]);
+        response.setCode(line[1]);
+        response.setStatus(line[2]);
+        Map<String, String> header = new HashMap<>();
+        for (int i = 1; i < lines.size()-1; i++) {
+            String[] entry = lines.get(i).split(":", 2);
+            header.put(entry[0], entry[1]);
         }
-        response.setHeader(map);
+        response.setHeader(header);
     }
 
-    private static void decodeResponseMessage(BufferedReader bf, Response response) throws IOException {
+    /***
+     * @return line和 header组成的List
+     */
+    private static List<String> getLines(InputStream resStream) throws IOException {
+        int i = -1;
+        byte[] buffer = new byte[1024];
+        List<String> lines = new ArrayList<>();
+        while (resStream.available() > 0) {
+            int b = resStream.read();
+            buffer[++i] = (byte) b;
+            System.out.println(b + " " + (i));
+            if (i >= 1 && (buffer[i-1] == '\r') && (buffer[i] == '\n')) {
+                byte[] line = Arrays.copyOfRange(buffer, 0, i+1);
+                lines.add(new String(line, StandardCharsets.UTF_8));
+                if (i == 1) {
+                    break;
+                } else {
+                    i = -1;
+                }
+            }
+        }
+        return lines;
+    }
+
+    /***
+     * 将响应体的内容以byte[]保存
+     */
+    private static void decodeResponseMessage(InputStream resStream, Response response) throws IOException {
         int messageLen = Integer.parseInt(response.getHeader().getOrDefault("Content-Length", "0").trim()); //响应体有多少字节
         if (messageLen != 0) {
-            char[] chars = new char[messageLen];
-            int readByte = bf.read(chars);
-            String message = new String(chars).substring(0, readByte);
-            response.setMessage(message);
+            int remainingByte = messageLen;
+            byte[] buffer = new byte[messageLen];
+            int i = 0;
+            while (remainingByte > 0) {
+                int alreadyRead = resStream.read(buffer, i, remainingByte);
+                remainingByte -= alreadyRead;
+                i += alreadyRead;
+            }
+            response.setMessage(buffer);
         }
     }
 
+    public void setMessage(byte[] message) {
+        this.message = message;
+    }
 
     public void setCode(String s) {code = Integer.parseInt(s);}
 
@@ -91,9 +117,9 @@ public class Response {
 
     public Map<String, String> getHeader() {return header;}
 
-    public void setMessage(String s) {message = s;}
+    public String text() {return new String(message, StandardCharsets.UTF_8); }
 
-    public String getMessage() {return message;}
+    public byte[] content() {return message; }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -105,7 +131,7 @@ public class Response {
             sb.append(tmp);
         }
         sb.append("\r\n");
-        sb.append(message);
+        sb.append(text());
         sb.append("\r\n");
 
         return sb.toString();

@@ -41,9 +41,10 @@ public class HttpClient {
             reRequest(request);
             System.out.print(request);
             OutputStream outToServer = client.getOutputStream();
-            outToServer.write(request.toString().getBytes(StandardCharsets.UTF_8));
+            outToServer.write("88888888888".getBytes(StandardCharsets.UTF_8));
 
             InputStream inFromServer = client.getInputStream();
+            System.out.println(inFromServer.available());
             Response response = Response.parseResponse(inFromServer);
             handleResponse(response, url);
             System.out.print(response);
@@ -88,7 +89,7 @@ public class HttpClient {
     private void switchToPost(Request request, String user_name, String password) {
         request.setMethod("POST");
         String message = "User_name:"+user_name+",Password:"+password;
-        request.setMessage(message);
+        request.setMessage(message.getBytes());
     }
 
     /***

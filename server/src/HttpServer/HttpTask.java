@@ -28,13 +28,14 @@ public class HttpTask implements Runnable{
                     exit=true;
                 }else{
                     InputStream inFromClient = socket.getInputStream();
+                    System.out.println(inFromClient.available());
                     if(inFromClient.available()>0){
                         lastReceiveTime=currentTime;//更新最近的连接时间
                         Request request = Request.parseRequest(inFromClient);
-                        System.out.print(request);
+                        System.out.print(request.toString());
                         Response response = Response.buildResponse(request);
                         assert response != null;
-                        System.out.print(response);
+                        System.out.print(response.toString());
                         OutputStream outToClient = socket.getOutputStream();
                         outToClient.write(response.toString().getBytes(StandardCharsets.UTF_8));
                     }

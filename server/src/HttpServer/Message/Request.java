@@ -7,15 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Request {
     private String method;
     private String url;
     private String version;
     private Map<String, String> header;
-    private String message; //由于我们只用request.post()发送账号、密码等文本信息，固请求体部分简化为String进行存取
+    private byte[] message;
 
     /***
      * 解析inputSteam流，返回一个request对象，用于server接受来自client的请求
@@ -25,10 +24,8 @@ public class Request {
      */
     public static Request parseRequest(InputStream reqStream) throws IOException {
         Request request = new Request();
-        BufferedReader bf = new BufferedReader(new InputStreamReader(reqStream, StandardCharsets.UTF_8));
-        decodeRequestLine(bf, request);
-        decodeRequestHeader(bf, request);
-        decodeRequestMessage(bf, request);
+        decodeRequestLineAndHeader(reqStream, request);
+        decodeRequestMessage(reqStream, request);
         return request;
     }
 
@@ -46,34 +43,60 @@ public class Request {
         return request;
     }
 
-    private static void decodeRequestLine(BufferedReader bf, Request request) throws IOException {
-        String firstLine = bf.readLine();
-        String[] lines = firstLine.split(" ", 3);
-        assert lines.length == 3;
-        request.setMethod(lines[0]);
-        request.setUrl(lines[1]);
-        request.setVersion(lines[2]);
-    }
-
-    private static void decodeRequestHeader(BufferedReader bf, Request request) throws IOException {
-        Map<String, String> map = new HashMap<>();
-        String line = null;
-        while (!(line = bf.readLine()).equals("")) {
-            String[] lines = line.split(":");
-            assert lines.length == 2;
-            map.put(lines[0], lines[1]);
+    /***
+     * 设置request的行和头
+     */
+    private static void decodeRequestLineAndHeader(InputStream reqStream, Request request) throws IOException {
+        List<String> lines = getLines(reqStream);
+        String[] line = lines.get(0).split(" ", 3);
+        request.setVersion(line[2]);
+        request.setUrl(line[1]);
+        request.setMethod(line[0]);
+        Map<String, String> header = new HashMap<>();
+        for (int i = 1; i < lines.size()-1; i++) {
+            String[] entry = lines.get(i).split(":", 2);
+            header.put(entry[0], entry[1]);
         }
-        request.setHeader(map);
+        request.setHeader(header);
     }
 
-    private static void decodeRequestMessage(BufferedReader bf, Request request) throws IOException {
+    /***
+     * @return line和 header组成的List
+     */
+    private static List<String> getLines(InputStream reqStream) throws IOException {
+        int i = -1;
+        byte[] buffer = new byte[1024];
+        List<String> lines = new ArrayList<>();
+        while (reqStream.available() > 0) {
+            int b = reqStream.read();
+            buffer[++i] = (byte) b;
+            System.out.println(b + " " + (i));
+            if (i >= 1 && (buffer[i-1] == '\r') && (buffer[i] == '\n')) {
+                byte[] line = Arrays.copyOfRange(buffer, 0, i+1);
+                lines.add(new String(line, StandardCharsets.UTF_8));
+                if (i == 1) {
+                    break;
+                } else {
+                    i = -1;
+                }
+            }
+        }
+        return lines;
+    }
+
+
+    private static void decodeRequestMessage(InputStream reqStream, Request request) throws IOException {
         int messageLen = Integer.parseInt(request.getHeader().getOrDefault("Content-Length", "0").trim()); //请求体有多少字节，可能为0
         if (messageLen != 0) {
-            char[] chars = new char[messageLen];
-            int readByte = bf.read(chars);
-            assert readByte == messageLen;
-            String message = new String(chars).substring(0, readByte);
-            request.setMessage(message);
+            int remainingByte = messageLen;
+            byte[] buffer = new byte[messageLen];
+            int i = 0;
+            while (remainingByte > 0) {
+                int alreadyRead = reqStream.read(buffer, i, remainingByte);
+                remainingByte -= alreadyRead;
+                i += alreadyRead;
+            }
+            request.setMessage(buffer);
         }
     }
 
@@ -109,11 +132,11 @@ public class Request {
         header = map;
     }
 
-    public String getMessage() {
-        return message;
-    }
+    public String text() {return message == null ? null : new String(message, StandardCharsets.UTF_8); }
 
-    public void setMessage(String s) {
+    public byte[] content() {return message; }
+
+    public void setMessage(byte[] s) {
         message = s;
     }
 
@@ -128,7 +151,7 @@ public class Request {
         }
         sb.append("\r\n");
         if (message != null) {
-            sb.append(message);
+            sb.append(text());
         }
         sb.append("\r\n");
 

@@ -132,25 +132,27 @@ public class ServerJsonReader {
         if (map == null) {
             map = new HashMap<>();
         }
-        map.put("Content-Length", String.valueOf(response.getMessage().getBytes(StandardCharsets.UTF_8).length));
+        map.put("Content-Length", String.valueOf(response.content().length));
         response.setHeader(map);
     }
 
-    private String ReturnMessage(String url){//TODO
+    private byte[] ReturnMessage(String url){//TODO
         InputStream resource = HttpServer.class.getResourceAsStream(HttpServer.ROOT_PATH + url);
-        StringBuilder sb = new StringBuilder();
         try{
             assert resource != null;
-            BufferedReader bf = new BufferedReader(new InputStreamReader(resource));
-            String line;
-            while ((line = bf.readLine()) != null) {
-                sb.append(line);
-                sb.append("\r\n");
+            int remainingByte = resource.available();
+            byte[] buffer = new byte[remainingByte];
+            int i = 0;
+            while (remainingByte > 0) {
+                int alreadyRead = resource.read(buffer, i, remainingByte);
+                remainingByte -= alreadyRead;
+                i += alreadyRead;
             }
+            return buffer;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return sb.toString();
+        return null;
     }
 
     public static void main(String[] args) {
