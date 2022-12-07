@@ -7,15 +7,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class HttpServer {
-
-    public static final Path RESOURCES_ROOT = Paths.get("/HTTP-Proj/server/src/main/resources/webroot"); //资源存放路径
-    public static final int DEFAULT_PORT = 8080; //默认8080端口
+    public static final Path RESOURCES_ROOT = Paths.get(
+            System.getProperty("user.dir") + "/server/src/main/resources/webroot"); //资源存放路径
+    public static final int DEFAULT_PORT = 8080;
 
     /***
      * 启动服务器，开始监听
      */
     public static void start() {
-
         try (ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT)) {
             System.out.println("服务器端正在监听端口：" + DEFAULT_PORT + "...");
             while (true) {

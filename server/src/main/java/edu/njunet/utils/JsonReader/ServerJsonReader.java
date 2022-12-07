@@ -23,21 +23,20 @@ import java.util.Map;
 import static edu.njunet.utils.SystemTime.systemTime;
 
 public class ServerJsonReader {
-    private final static Path file_path = Paths.get(System.getProperty("user.home") +
-            HttpServer.RESOURCES_ROOT + "/resourceManagement.json");
-    private static ServerJsonReader serverJsonReaderInstance;
+    private final static Path FILE_SYS_JSON_PATH = Paths.get(HttpServer.RESOURCES_ROOT + "/resourceManagement.json");
+    private static ServerJsonReader serverJsonReader;
     private final ServerResourceBean resourceBean;
 
     private ServerJsonReader() {
-        String jsonStr = FileUtil.readUtf8String(new File(file_path.toUri()));
+        String jsonStr = FileUtil.readUtf8String(new File(FILE_SYS_JSON_PATH.toUri()));
         resourceBean = JSON.parseObject(jsonStr, ServerResourceBean.class);
     }
 
     public static ServerJsonReader getInstance() {
-        if (serverJsonReaderInstance == null) {
-            serverJsonReaderInstance = new ServerJsonReader();
+        if (serverJsonReader == null) {
+            serverJsonReader = new ServerJsonReader();
         }
-        return serverJsonReaderInstance;
+        return serverJsonReader;
     }
 
     public Response createResponse(Request request) {
@@ -118,7 +117,7 @@ public class ServerJsonReader {
                 if (response.getHeader() == null) {
                     response.setHeader(new HashMap<>());
                 }
-                response.getHeader().put("Vary","Accept-Encoding");
+                response.getHeader().put("Vary", "Accept-Encoding");
                 response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(request.getUrl()));
                 response.setMessage(ReturnMessage(request.getUrl()));
             }
@@ -150,7 +149,7 @@ public class ServerJsonReader {
                 if (response.getHeader() == null) {
                     response.setHeader(new HashMap<>());
                 }
-                response.getHeader().put("Vary","Accept-Encoding");
+                response.getHeader().put("Vary", "Accept-Encoding");
                 response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(request.getUrl()));
             }
             case 404 -> response.setStatus("Not Found");
@@ -182,9 +181,7 @@ public class ServerJsonReader {
 
     private byte[] ReturnMessage(String url) {//TODO
 
-        try (InputStream resource =
-                     new FileInputStream(
-                             System.getProperty("user.home") + "/HTTP-Proj/server/src/main/resources/webroot" + url)) {
+        try (InputStream resource = new FileInputStream(HttpServer.RESOURCES_ROOT + url)) {
             int remainingByte = resource.available();
             byte[] buffer = new byte[remainingByte];
             int i = 0;
