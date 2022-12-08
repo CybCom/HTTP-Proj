@@ -1,4 +1,4 @@
-package edu.njunet.utils;
+package edu.njunet.utils.JsonOps;
 
 import java.util.HashMap;
 import java.util.Map;

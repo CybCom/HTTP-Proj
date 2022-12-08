@@ -1,4 +1,4 @@
-package edu.njunet.utils.JsonReader.JavaBean;
+package edu.njunet.utils.JsonOps.JavaBean;
 
 import java.util.List;
 
