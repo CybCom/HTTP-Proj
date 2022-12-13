@@ -1,6 +1,7 @@
 package edu.njunet;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Path;
@@ -16,6 +17,7 @@ public class HttpServer {
      */
     public static void start() {
         try (ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT)) {
+            System.out.println(serverSocket.getLocalSocketAddress());
             System.out.println("服务器端正在监听端口：" + DEFAULT_PORT + "...");
             while (true) {
                 final Socket socket = serverSocket.accept();

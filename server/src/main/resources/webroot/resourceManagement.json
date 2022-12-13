@@ -4,7 +4,7 @@
             "Url": "/test.html",
             "Allow": "GET",
             "ModifiedJudge": {
-                "Last_modified": "Thu, 15 Dec 2022 06:08:00 GMT",
+                "Last_modified": "Thu, 08 Dec 2022 06:08:00 GMT",
                 "Etag": "1"
             },
             "ReLocationJudge": {
@@ -17,7 +17,7 @@
             "Url": "/tomb_raider.png",
             "Allow": "GET",
             "ModifiedJudge": {
-                "Last_modified": "Thu, 15 Dec 2022 06:08:00 GMT",
+                "Last_modified": "Thu, 08 Dec 2022 06:08:00 GMT",
                 "Etag": "1"
             },
             "ReLocationJudge": {
@@ -30,7 +30,46 @@
             "Url": "/1.png",
             "Allow": "GET",
             "ModifiedJudge": {
-                "Last_modified": "Thu, 15 Dec 2022 06:08:00 GMT",
+                "Last_modified": "Tue, 13 Dec 2022 11:55:46 GMT",
+                "Etag": "1"
+            },
+            "ReLocationJudge": {
+                "IsMove": false,
+                "New_url": "null",
+                "IsPermanent": false
+            }
+        },
+        {
+            "Url": "/Devil_Kid.flac",
+            "Allow": "GET",
+            "ModifiedJudge": {
+                "Last_modified": "Thu, 08 Dec 2022 06:08:00 GMT",
+                "Etag": "1"
+            },
+            "ReLocationJudge": {
+                "IsMove": false,
+                "New_url": "null",
+                "IsPermanent": false
+            }
+        },
+        {
+            "Url": "/new.mp4",
+            "Allow": "GET",
+            "ModifiedJudge": {
+                "Last_modified": "Thu, 08 Dec 2022 06:08:00 GMT",
+                "Etag": "1"
+            },
+            "ReLocationJudge": {
+                "IsMove": false,
+                "New_url": "null",
+                "IsPermanent": false
+            }
+        },
+        {
+            "Url": "/Dark_seeks_light.mp3",
+            "Allow": "GET",
+            "ModifiedJudge": {
+                "Last_modified": "Thu, 08 Dec 2022 06:08:00 GMT",
                 "Etag": "1"
             },
             "ReLocationJudge": {

@@ -60,18 +60,18 @@ public class ServerJsonReader {
                         boolean contains = request.getHeader().containsKey("If-None-Match") ||
                                 request.getHeader().containsKey("If-Modified-Since");
                         if (contains) {//304
-                            if (request.getHeader().containsKey("If-None-Match")) {//TODO maybe change
-                                for (ServerDataBean findEtag : resourceBean.getResourceList()) {
-                                    if (request.getHeader().get("If-None-Match").contains(
-                                            findEtag.getModifiedJudge().getEtag())) {//TODO 弱比较方法 contains || equals
-                                        return "304";
-                                    }
-                                }
-                                return "200";
-                            }
+//                            if (request.getHeader().containsKey("If-None-Match")) {//TODO maybe change
+//                                for (ServerDataBean findEtag : resourceBean.getResourceList()) {
+//                                    if (request.getHeader().get("If-None-Match").equals(
+//                                            findEtag.getModifiedJudge().getEtag())) {//TODO 强比较方法 equals
+//                                        return "304";
+//                                    }
+//                                }
+//                                return "200";
+//                            }
                             if (request.getHeader().containsKey("If-Modified-Since")) {
                                 String[] sModified = list.getModifiedJudge().getLast_modified().split(" ");
-                                String[] rModified = request.getHeader().get("Last-Modified").split(" ");
+                                String[] rModified = request.getHeader().get("If-Modified-Since").split(" ");
                                 String sourceModified = sModified[3] + MonthToNum.Month_Map.get(sModified[2])
                                         + sModified[1] + sModified[4];
                                 String requestModified = rModified[3] + MonthToNum.Month_Map.get(rModified[2])
@@ -100,6 +100,7 @@ public class ServerJsonReader {
             }
             return "404";
         } catch (Exception e) {
+            e.printStackTrace();
             return "500";
         }
 

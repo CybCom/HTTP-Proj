@@ -28,7 +28,7 @@ public class HttpRequestHandler implements Runnable {
                     break;
                 } else {
                     InputStream inFromClient = socket.getInputStream();
-                    System.out.println(inFromClient.available());
+//                    System.out.println(inFromClient.available());
                     if (inFromClient.available() > 0) {
                         lastReceiveTime = currentTime;//更新最近的连接时间
                         Request request = Request.parseRequest(inFromClient);
