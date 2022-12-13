@@ -7,6 +7,7 @@ import edu.njunet.protocol.Request;
 import edu.njunet.protocol.Response;
 import edu.njunet.protocol.Servlet;
 import edu.njunet.session.HttpServer;
+import edu.njunet.utils.JsonOps.JavaBean.LoginDataBean;
 import edu.njunet.utils.JsonOps.JavaBean.ServerDataBean;
 import edu.njunet.utils.JsonOps.JavaBean.ServerResourceBean;
 
@@ -210,8 +211,95 @@ public class JsonService implements Servlet {
 
     @Override
     public void service(Request request, Response response) {
+        if (request.getUrl().equals("/register")) {
+            register(request, response);
+        } else if (request.getUrl().equals("/login")) {
+            login(request, response);
+        } else {
+            response.setVersion(request.getVersion());
+            response.setCode(judgeCode(request));
+            setOthersByCode(response, request);
+        }
+    }
+
+    private void register(Request request, Response response) {
         response.setVersion(request.getVersion());
-        response.setCode(judgeCode(request));
-        setOthersByCode(response, request);
+        if (!request.getMethod().equals("POST")) {
+            response.setCode("405");
+            response.setStatus("Method Not Allowed");
+        } else {
+            response.setCode("200");
+            response.setStatus("OK");
+            String[] userInformation = request.text().split("\r\n", 2);
+            String password = userInformation[1].split(":", 2)[1];
+            String userName = userInformation[0].split(":", 2)[1];
+            boolean isExist = false;
+            for (LoginDataBean loginDataBean: resourceBean.getLogin()) {
+                if (userName.equals(loginDataBean.getUser_name())) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (isExist) {
+                response.setMessage("Account have existed!".getBytes());
+            } else {
+                LoginDataBean newUser = new LoginDataBean();
+                newUser.setUser_name(userName);
+                newUser.setPassword(password);
+                resourceBean.getLogin().add(newUser);
+                response.setMessage("Register complete!".getBytes());
+            }
+        }
+
+        Map<String, String> map = response.getHeader();
+        if (map == null) {
+            map = new HashMap<>();
+        }
+        map.put("Connection", "keep-alive");
+        if (response.content() != null) {
+            map.put("Content-Length", String.valueOf(response.content().length));
+        }
+        response.setHeader(map);
+
+    }
+
+    private void login(Request request, Response response) {
+        response.setVersion(request.getVersion());
+        if (!request.getMethod().equals("POST")) {
+            response.setCode("405");
+            response.setStatus("Method Not Allowed");
+        } else {
+            response.setCode("200");
+            response.setStatus("OK");
+            String[] userInformation = request.text().split("\r\n", 2);
+            String password = userInformation[1].split(":", 2)[1];
+            String userName = userInformation[0].split(":", 2)[1];
+
+            boolean isExist = false;
+            for (LoginDataBean loginDataBean: resourceBean.getLogin()) {
+                if (userName.equals(loginDataBean.getUser_name())) {
+                    isExist = true;
+                    if (password.equals(loginDataBean.getPassword())) {
+                        response.setMessage(("Welcome back, " + userName + "!").getBytes());
+                    } else {
+                        response.setMessage("Password error!".getBytes());
+                    }
+                    break;
+                }
+            }
+            if (!isExist) {
+                response.setMessage("Account not exist!".getBytes());
+            }
+        }
+
+        Map<String, String> map = response.getHeader();
+        if (map == null) {
+            map = new HashMap<>();
+        }
+        map.put("Connection", "keep-alive");
+        if (response.content() != null) {
+            map.put("Content-Length", String.valueOf(response.content().length));
+        }
+        response.setHeader(map);
     }
 }
