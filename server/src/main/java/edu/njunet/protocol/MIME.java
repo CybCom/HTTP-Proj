@@ -1,11 +1,10 @@
-package edu.njunet.utils;
+package edu.njunet.protocol;
 
 import java.util.HashMap;
 
 public class MIME {
-    private static HashMap<String, String> MIMEList = new HashMap<>();
-    private static HashMap<String, String> reverseMiMeList = new HashMap<>(); // key value 反转
-    private static MIME mime = null;
+    private static final HashMap<String, String> MIMEList = new HashMap<>();
+    private static final MIME mime = new MIME();
 
     /**
      * 构造函数，将MIME类型载入
@@ -49,25 +48,15 @@ public class MIME {
         MIMEList.put(".midi", "audio/x-midi");
         MIMEList.put(".opus", "audio/opus");
         MIMEList.put(".weba", "audio/webm");
-        for (String val : MIMEList.keySet()) {
-            reverseMiMeList.put(MIMEList.get(val), val);
-        }
-
     }
 
     public static MIME getMimeList() {
-        if (MIME.mime == null) {
-            MIME.mime = new MIME();
-        }
         return MIME.mime;
     }
 
     /**
      * return mime_type according to the uri
      * if not found, return application/octet-stream
-     *
-     * @param Uri
-     * @return
      */
     public String getMimeType(String Uri) {
         int loc_point = Uri.lastIndexOf(".");
@@ -75,17 +64,4 @@ public class MIME {
         String end = Uri.substring(loc_point);
         return MIMEList.getOrDefault(end, "application/octet-stream");
     }
-
-    /**
-     * return key according to the value
-     * if not found, return .bin (application/octet*stream)
-     *
-     * @param mime
-     * @return
-     */
-    public String getReverseMimeType(String mime) {
-        return reverseMiMeList.getOrDefault(mime, ".bin");
-    }
-
-
 }

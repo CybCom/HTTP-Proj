@@ -1,8 +1,7 @@
-package edu.njunet.message;
+package edu.njunet.protocol;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Request {
@@ -12,18 +11,16 @@ public class Request {
     private Map<String, String> header;
     private byte[] message;
 
-    /***
-     * 解析inputSteam流，返回一个request对象，用于server接受来自client的请求
-     * @param reqStream 请求报文的字节流
-     * @return 解析好的request报文对象
+    /**
+     * 用于在server端创建将要发送的response
+     *
+     * @param reqStream binary stream from client.
      */
-    public static Request parseRequest(InputStream reqStream) throws IOException {
-        Request request = new Request();
-        decodeRequestLineAndHeader(reqStream, request);
-        decodeRequestMessage(reqStream, request);
-        return request;
+    public Request(InputStream reqStream) throws IOException {
+        decodeRequestLineAndHeader(reqStream, this);
+        decodeRequestMessage(reqStream, this);
+        System.out.println("Request Starts Here: \n" + this);
     }
-
 
     /***
      * 设置request的行和头
@@ -31,9 +28,10 @@ public class Request {
     private static void decodeRequestLineAndHeader(InputStream reqStream, Request request) throws IOException {
         List<String> lines = getLines(reqStream);
         String[] line = lines.get(0).replace("\r\n", "").split(" ", 3);
-        request.setVersion(line[2]);
-        request.setUrl(line[1]);
         request.setMethod(line[0]);
+        request.setUrl(line[1]);
+        request.setVersion(line[2]);
+
         Map<String, String> header = new HashMap<>();
         for (int i = 1; i < lines.size() - 1; i++) {
             String[] entry = lines.get(i).replace("\r\n", "").split(":", 2);
@@ -46,15 +44,15 @@ public class Request {
      * @return line和 header组成的List
      */
     private static List<String> getLines(InputStream reqStream) throws IOException {
-        int i = -1;
         byte[] buffer = new byte[1024];
         List<String> lines = new ArrayList<>();
+
+        int i = -1;
         while (reqStream.available() > 0) {
-            int b = reqStream.read();
-            buffer[++i] = (byte) b;
+            buffer[++i] = (byte) reqStream.read();
             if (i >= 1 && (buffer[i - 1] == '\r') && (buffer[i] == '\n')) {
                 byte[] line = Arrays.copyOfRange(buffer, 0, i + 1);
-                lines.add(new String(line, StandardCharsets.UTF_8));
+                lines.add(new String(line));
                 if (i == 1) {
                     break;
                 } else {
@@ -113,7 +111,7 @@ public class Request {
     }
 
     public String text() {
-        return message == null ? null : new String(message, StandardCharsets.UTF_8);
+        return message == null ? null : new String(message);
     }
 
     public void setMessage(byte[] s) {
@@ -133,7 +131,6 @@ public class Request {
         if (message != null) {
             sb.append(text());
         }
-
         return sb.toString();
     }
 }

@@ -1,6 +1,6 @@
-package edu.njunet.message;
+package edu.njunet.protocol;
 
-import edu.njunet.utils.JsonReader.ServerJsonReader;
+import edu.njunet.utils.JsonOps.JsonService;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,17 +18,10 @@ public class Response {
 
     private byte[] message;
 
-    /**
-     * 用于在server端创建将要发送的response
-     *
-     * @param request Request类（客户端发出的消息）
-     * @return 在server端将要发送的response
-     */
-    public static Response buildResponse(Request request) {
-        ServerJsonReader serverJsonReader = ServerJsonReader.getInstance();
-        return serverJsonReader.createResponse(request);
+    public Response(Request request) {
+        JsonService.getInstance().service(request, this);
+        System.out.println("Response Starts Here: \n" + this);
     }
-
 
     public void setMessage(byte[] message) {
         this.message = message;
@@ -67,6 +60,19 @@ public class Response {
         return message;
     }
 
+    public void send(OutputStream out) throws IOException {
+        String responseLine = version + " " + code + " " + status + "\r\n";
+        out.write(responseLine.getBytes(StandardCharsets.UTF_8));
+        for (Map.Entry<String, String> entry : header.entrySet()) {
+            String tmp = entry.getKey() + ":" + entry.getValue() + "\r\n";
+            out.write(tmp.getBytes(StandardCharsets.UTF_8));
+        }
+        out.write("\r\n".getBytes(StandardCharsets.UTF_8));
+        if (message != null) {
+            out.write(message);
+        }
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String responseLine = version + " " + code + " " + status + "\r\n";
@@ -82,18 +88,5 @@ public class Response {
         }
 
         return sb.toString();
-    }
-
-    public void send(OutputStream out) throws IOException {
-        String responseLine = version + " " + code + " " + status + "\r\n";
-        out.write(responseLine.getBytes(StandardCharsets.UTF_8));
-        for (Map.Entry<String, String> entry : header.entrySet()) {
-            String tmp = entry.getKey() + ":" + entry.getValue() + "\r\n";
-            out.write(tmp.getBytes(StandardCharsets.UTF_8));
-        }
-        out.write("\r\n".getBytes(StandardCharsets.UTF_8));
-        if (message != null) {
-            out.write(message);
-        }
     }
 }

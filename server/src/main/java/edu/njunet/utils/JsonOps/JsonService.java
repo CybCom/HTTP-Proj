@@ -1,14 +1,14 @@
-package edu.njunet.utils.JsonReader;
+package edu.njunet.utils.JsonOps;
 
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSON;
-import edu.njunet.HttpServer;
-import edu.njunet.message.Request;
-import edu.njunet.message.Response;
-import edu.njunet.utils.JsonReader.JavaBean.ServerDataBean;
-import edu.njunet.utils.JsonReader.JavaBean.ServerResourceBean;
-import edu.njunet.utils.MIME;
-import edu.njunet.utils.MonthToNum;
+import edu.njunet.protocol.MIME;
+import edu.njunet.protocol.Request;
+import edu.njunet.protocol.Response;
+import edu.njunet.protocol.Servlet;
+import edu.njunet.session.HttpServer;
+import edu.njunet.utils.JsonOps.JavaBean.ServerDataBean;
+import edu.njunet.utils.JsonOps.JavaBean.ServerResourceBean;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,31 +20,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static edu.njunet.utils.SystemTime.systemTime;
+import static edu.njunet.utils.JsonOps.SystemTime.systemTime;
 
-public class ServerJsonReader {
-    private final static Path FILE_SYS_JSON_PATH = Paths.get(HttpServer.RESOURCES_ROOT + "/resourceManagement.json");
-    private static ServerJsonReader serverJsonReader;
-    private final ServerResourceBean resourceBean;
+public class JsonService implements Servlet {
+    private static final Path FILE_SYS_JSON_PATH = Paths.get(HttpServer.RESOURCES_ROOT + "/resourceManagement.json");
+    private static final JsonService JSON_SERVICE = new JsonService();
 
-    private ServerJsonReader() {
-        String jsonStr = FileUtil.readUtf8String(new File(FILE_SYS_JSON_PATH.toUri()));
-        resourceBean = JSON.parseObject(jsonStr, ServerResourceBean.class);
-    }
+    private static final ServerResourceBean resourceBean =
+            JSON.parseObject(FileUtil.readUtf8String(new File(FILE_SYS_JSON_PATH.toUri())), ServerResourceBean.class);
 
-    public static ServerJsonReader getInstance() {
-        if (serverJsonReader == null) {
-            serverJsonReader = new ServerJsonReader();
-        }
-        return serverJsonReader;
-    }
-
-    public Response createResponse(Request request) {
-        Response response = new Response();
-        response.setVersion(request.getVersion());
-        response.setCode(judgeCode(request));
-        setOthersByCode(response, request);
-        return response;
+    public static JsonService getInstance() {
+        return JSON_SERVICE;
     }
 
     /**
@@ -220,5 +206,12 @@ public class ServerJsonReader {
         String[] dateSt = dateStr.split(" ");
         return dateSt[0] + ", " + dateSt[2] + " " + dateSt[1]
                 + " " + dateSt[5] + " " + dateSt[3] + " GMT";
+    }
+
+    @Override
+    public void service(Request request, Response response) {
+        response.setVersion(request.getVersion());
+        response.setCode(judgeCode(request));
+        setOthersByCode(response, request);
     }
 }
