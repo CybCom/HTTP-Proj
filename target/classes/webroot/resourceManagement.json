@@ -21,21 +21,8 @@
                 "Etag": "1"
             },
             "ReLocationJudge": {
-                "IsMove": false,
-                "New_url": "null",
-                "IsPermanent": false
-            }
-        },
-        {
-            "Url": "/1.png",
-            "Allow": "GET",
-            "ModifiedJudge": {
-                "Last_modified": "Tue, 13 Dec 2022 11:55:46 GMT",
-                "Etag": "1"
-            },
-            "ReLocationJudge": {
-                "IsMove": false,
-                "New_url": "null",
+                "IsMove": true,
+                "New_url": "/relocation/tomb_raider.png",
                 "IsPermanent": false
             }
         },
@@ -47,22 +34,9 @@
                 "Etag": "1"
             },
             "ReLocationJudge": {
-                "IsMove": false,
-                "New_url": "null",
-                "IsPermanent": false
-            }
-        },
-        {
-            "Url": "/new.mp4",
-            "Allow": "GET",
-            "ModifiedJudge": {
-                "Last_modified": "Thu, 08 Dec 2022 06:08:00 GMT",
-                "Etag": "1"
-            },
-            "ReLocationJudge": {
-                "IsMove": false,
-                "New_url": "null",
-                "IsPermanent": false
+                "IsMove": true,
+                "New_url": "/relocation/Devil_Kid.flac",
+                "IsPermanent": true
             }
         },
         {
@@ -82,7 +56,7 @@
     "Login": [
         {
             "User_name": "张三",
-            "Password": "12346789",
+            "Password": "123456789",
             "Last_login": ""
         },
         {

@@ -98,26 +98,24 @@ public class JsonService implements Servlet {
      *                 返回根据状态码改变的报文
      */
     private void setOthersByCode(Response response, Request request) {
-        //TODO
+        Map<String, String> map = response.getHeader();
+        if (map == null) {
+            map = new HashMap<>();
+        }
+        map.put("Vary", "Accept-Encoding");
+        map.put("Content-Type", MIME.getMimeList().getMimeType(request.getUrl()));
+        map.put("Connection", "keep-alive");
+
         switch (response.getCode()) {
             case 200 -> {          //头部有 Cache-Control, Content-Location, Date, ETag, Expires，和 Vary.
                 response.setStatus("OK");
-                if (response.getHeader() == null) {
-                    response.setHeader(new HashMap<>());
-                }
-                response.getHeader().put("Vary", "Accept-Encoding");
-                response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(request.getUrl()));
                 response.setMessage(ReturnMessage(request.getUrl()));
             }
             case 301 -> {
                 response.setStatus("Moved Permanently");
                 for (ServerDataBean list : resourceBean.getResourceList()) {
                     if (list.getUrl().equals(request.getUrl())) {
-                        if (response.getHeader() == null) {
-                            response.setHeader(new HashMap<>());
-                        }
-                        response.getHeader().put("Location", list.getReLocationJudge().getNew_url());
-                        response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(list.getReLocationJudge().getNew_url()));
+                        map.put("Location", list.getReLocationJudge().getNew_url());
                     }
                 }
                 response.setMessage(ReturnMessage(response.getHeader().get("Location")));
@@ -127,19 +125,11 @@ public class JsonService implements Servlet {
                 for (ServerDataBean list : resourceBean.getResourceList()) {
                     if (list.getUrl().equals(request.getUrl())) {
                         response.setMessage(ReturnMessage(list.getReLocationJudge().getNew_url()));
-                        response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(list.getReLocationJudge().getNew_url()));
                     }
                 }
 
             }
-            case 304 -> {
-                response.setStatus("Not Modified");
-                if (response.getHeader() == null) {
-                    response.setHeader(new HashMap<>());
-                }
-                response.getHeader().put("Vary", "Accept-Encoding");
-                response.getHeader().put("Content-Type", MIME.getMimeList().getMimeType(request.getUrl()));
-            }
+            case 304 -> response.setStatus("Not Modified");
             case 404 -> response.setStatus("Not Found");
             case 405 -> response.setStatus("Method Not Allowed");
             case 500 -> response.setStatus("Internal Server Error");
@@ -148,11 +138,6 @@ public class JsonService implements Servlet {
 
         }
 
-        Map<String, String> map = response.getHeader();
-        if (map == null) {
-            map = new HashMap<>();
-        }
-        map.put("Connection", "keep-alive");
         if (response.content() != null) {
             map.put("Content-Length", String.valueOf(response.content().length));
         }
@@ -167,7 +152,7 @@ public class JsonService implements Servlet {
         response.setHeader(map);
     }
 
-    private byte[] ReturnMessage(String url) {//TODO
+    private byte[] ReturnMessage(String url) {
 
         try (InputStream resource = new FileInputStream(HttpServer.RESOURCES_ROOT + url)) {
             int remainingByte = resource.available();
@@ -200,7 +185,7 @@ public class JsonService implements Servlet {
         return res / 10;
     }
 
-    private String expiresTime(int maxAge) {//todo 默认一年
+    private String expiresTime(int maxAge) {// 默认一年
         java.util.Date date = new Date();
         date.setTime(System.currentTimeMillis() + maxAge * 1000L);
         String dateStr = date.toString();
