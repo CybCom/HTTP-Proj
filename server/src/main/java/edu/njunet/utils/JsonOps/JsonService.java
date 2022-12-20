@@ -118,7 +118,7 @@ public class JsonService implements Servlet {
                         map.put("Location", list.getReLocationJudge().getNew_url());
                     }
                 }
-                response.setMessage(ReturnMessage(response.getHeader().get("Location")));
+                response.setMessage(ReturnMessage(map.get("Location")));
             }
             case 302 -> {
                 response.setStatus("Found");
