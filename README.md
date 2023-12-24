@@ -1,3 +1,7 @@
+# COURSE COMPLETED. ARCHIVED.
+
+---
+
 # 提醒
 
 ## 务必clone到本机的主用户目录下，否则可能产生路径问题
